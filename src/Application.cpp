@@ -13,6 +13,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	shader = new Shader("data/shaders/default");
+	camera = new Camera(screenSize, 59.0f, 0.01f, 1000.0f);
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 
@@ -27,16 +30,23 @@ void Application::HandleEvent(SDL_Event& event)
 	switch (event.type)
 	{
 	case SDL_MOUSEBUTTONDOWN:
+	{
 		std::cout << "Mouse button down" << std::endl;
 		break;
+	}
 	default:
 		break;
 	}
+	camera->HandleEvent(event);
 }
 
 void Application::Update(float deltaTime)
 {
-	
+	glm::mat4 m = glm::mat4();
+	m = glm::rotate(m, glm::radians(SDL_GetTicks()*360/10000.0f), glm::vec3(0, 0, 1));
+
+	shader->SetUniform("model", m);
+	shader->SetUniform("projview", camera->GetProjectionView());
 }
 
 void Application::Render()
@@ -50,7 +60,7 @@ void Application::Render()
 
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDrawArrays(GL_LINE_STRIP, 0, 4);
 
 	glDisableVertexAttribArray(0);
 }

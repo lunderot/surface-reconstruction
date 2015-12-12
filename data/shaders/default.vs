@@ -1,8 +1,11 @@
 #version 150
 
-in vec2 position;
+uniform mat4 projview;
+uniform mat4 model;
+
+in vec3 position;
 
 void main()
 {
-	gl_Position = vec4(position.x, position.y, 0, 1);
+	gl_Position = projview * model * vec4(position, 1);
 }

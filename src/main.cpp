@@ -4,7 +4,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		Application app(glm::uvec2(1280, 720), "OpenGLFPS", argc, argv);
+		Application app(glm::uvec2(1920, 1080), "OpenGLFPS", argc, argv);
 		app.Run();
 	}
 	catch (std::exception e)
