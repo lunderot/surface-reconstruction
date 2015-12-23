@@ -3,10 +3,42 @@
 Application::Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]) : System(screenSize, title, argc, argv)
 {
 	float vertices[] = {		
-		+0.5f, +0.5f, 1.0f,
-		-0.5f, +0.5f, 0.0f,
-		+0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 1.0f
+		-1.0f, -1.0f, -1.0f, // triangle 1 : begin
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f, // triangle 1 : end
+		   1.0f, 1.0f, -1.0f, // triangle 2 : begin
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f, // triangle 2 : end
+		  1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		   1.0f, -1.0f, -1.0f,
+		   1.0f, 1.0f, -1.0f,
+		   1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f,
+		   1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		   1.0f, -1.0f, 1.0f,
+		   1.0f, 1.0f, 1.0f,
+		   1.0f, -1.0f, -1.0f,
+		   1.0f, 1.0f, -1.0f,
+		   1.0f, -1.0f, -1.0f,
+		   1.0f, 1.0f, 1.0f,
+		   1.0f, -1.0f, 1.0f,
+		   1.0f, 1.0f, 1.0f,
+		   1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		   1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+		   1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		    1.0f, -1.0f, 1.0f
 	};
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -58,9 +90,9 @@ void Application::Render()
 
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_LINE_STRIP, 0, 4);
+	glDrawArrays(GL_TRIANGLES, 0, 12*3);
 
 	glDisableVertexAttribArray(0);
 }

@@ -3,7 +3,7 @@
 
 Camera::Camera(const glm::uvec2& screenSize, glm::f32 fovy, glm::f32 near, glm::f32 far)
 {
-	position = glm::vec3(0, 1, 1);
+	position = glm::vec3(0, 10, 3);
 	lookDirection = glm::vec3(0, -1, -1);
 	mouseChange = glm::vec2(0.0f, 100.0f);
 	view = glm::lookAt(position, position + lookDirection, glm::vec3(0.0f, 0.0f, 1.0f));
