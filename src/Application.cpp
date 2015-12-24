@@ -2,50 +2,11 @@
 
 Application::Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]) : System(screenSize, title, argc, argv)
 {
-	float vertices[] = {		
-		-1.0f, -1.0f, -1.0f, // triangle 1 : begin
-		-1.0f, -1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f, // triangle 1 : end
-		   1.0f, 1.0f, -1.0f, // triangle 2 : begin
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f, // triangle 2 : end
-		  1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f,
-		   1.0f, -1.0f, -1.0f,
-		   1.0f, 1.0f, -1.0f,
-		   1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, -1.0f,
-		   1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
-		   1.0f, -1.0f, 1.0f,
-		   1.0f, 1.0f, 1.0f,
-		   1.0f, -1.0f, -1.0f,
-		   1.0f, 1.0f, -1.0f,
-		   1.0f, -1.0f, -1.0f,
-		   1.0f, 1.0f, 1.0f,
-		   1.0f, -1.0f, 1.0f,
-		   1.0f, 1.0f, 1.0f,
-		   1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, -1.0f,
-		   1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, -1.0f,
-		-1.0f, 1.0f, 1.0f,
-		   1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		    1.0f, -1.0f, 1.0f
-	};
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
 	shader = new Shader("data/shaders/default");
 	camera = new Camera(screenSize, 59.0f, 0.01f, 1000.0f);
+	assetManager = new AssetManager("data/models/");
+
+	tree = assetManager->GetAsset("tree.obj");
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -54,7 +15,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 Application::~Application()
 {
 	delete shader;
-	glDeleteBuffers(1, &vbo);
+	delete camera;
+	delete assetManager;
 }
 
 void Application::HandleEvent(SDL_Event& event)
@@ -92,7 +54,9 @@ void Application::Render()
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 12*3);
+	glBindBuffer(GL_ARRAY_BUFFER, tree->GetVBO());
+
+	glDrawArrays(GL_TRIANGLES, 0, tree->GetVertexCount());
 
 	glDisableVertexAttribArray(0);
 }
