@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "AssetManager.h"
+#include "Mesh.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -13,7 +14,8 @@ class Application: public System
 private:
 	Shader* shader;
 	Camera* camera;
-	AssetManager* assetManager;
+	AssetManager<Mesh>* meshManager;
+	AssetManager<Shader>* shaderManager;
 
 	Mesh* tree;
 public:

@@ -2,11 +2,13 @@
 
 Application::Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]) : System(screenSize, title, argc, argv)
 {
-	shader = new Shader("data/shaders/default");
+	
 	camera = new Camera(screenSize, 59.0f, 0.01f, 1000.0f);
-	assetManager = new AssetManager("data/models/");
+	meshManager = new AssetManager<Mesh>("data/models/");
+	shaderManager = new AssetManager<Shader>("data/shaders/");
 
-	tree = assetManager->GetAsset("tree.obj");
+	tree = meshManager->GetAsset("tree.obj");
+	shader = shaderManager->GetAsset("default");
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -14,9 +16,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 Application::~Application()
 {
-	delete shader;
 	delete camera;
-	delete assetManager;
+	delete meshManager;
+	delete shaderManager;
 }
 
 void Application::HandleEvent(SDL_Event& event)
