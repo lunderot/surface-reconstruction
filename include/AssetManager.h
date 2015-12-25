@@ -40,7 +40,7 @@ T* AssetManager<T>::GetAsset(const std::string& name)
 	{
 		returnAsset = assets.at(name);
 	}
-	catch (const std::out_of_range& e)
+	catch (const std::out_of_range&)
 	{
 		returnAsset = new T(assetPath + name);
 		assets[name] = returnAsset;

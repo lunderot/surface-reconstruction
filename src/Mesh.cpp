@@ -56,7 +56,7 @@ Mesh::Mesh(const std::string& filepath)
 
 	std::vector<glm::vec3> out;
 
-	for (int i = 0; i < vertexIndices.size(); i++)
+	for (unsigned int i = 0; i < vertexIndices.size(); i++)
 	{
 		unsigned int vertexIndex = vertexIndices[i];
 		glm::vec3 vertex = vertices[vertexIndex - 1];
