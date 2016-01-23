@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "Application.h"
 
 int main(int argc, char* argv[])
@@ -9,8 +11,9 @@ int main(int argc, char* argv[])
 	}
 	catch (std::exception e)
 	{
-		std::cout << e.what() << std::endl;
-		std::cout << "SDL error: " << SDL_GetError() << std::endl;
+		std::stringstream ss;
+		ss << e.what() << std::endl << "SDL error: " << SDL_GetError();
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", ss.str().c_str(), nullptr);
 		return 1;
 	}
 	return 0;
