@@ -12,11 +12,11 @@
 class Application: public System
 {
 private:
-	Shader* shader;
-	Camera* camera;
-	AssetManager<Mesh>* meshManager;
-	AssetManager<Shader>* shaderManager;
+	Camera camera;
+	AssetManager<Mesh> meshManager;
+	AssetManager<Shader> shaderManager;
 
+	Shader* shader;
 	Mesh* tree;
 public:
 	Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]);

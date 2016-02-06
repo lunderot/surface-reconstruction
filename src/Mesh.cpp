@@ -2,6 +2,42 @@
 
 Mesh::Mesh(const std::string& filepath)
 {
+	std::vector<Vertex> out;
+	LoadMesh(filepath, out);
+
+	//Generate vertex buffer and vertex array object
+	glGenBuffers(1, &vbo);
+	glGenVertexArrays(1, &vao);
+
+	//Bind the buffers
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	//Load the vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, out.size() * sizeof(Vertex), out.data(), GL_STATIC_DRAW);
+
+	//Enable the shader attributes
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+
+	glBindVertexArray(0);
+	this->vertexCount = out.size();
+}
+
+
+Mesh::~Mesh()
+{
+	glDeleteBuffers(1, &vbo);
+	glDeleteVertexArrays(1, &vao);
+}
+
+void Mesh::LoadMesh(const std::string& filepath, std::vector<Vertex>& out)
+{
 	std::vector<glm::u32> vertexIndices, uvIndices, normalIndices;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
@@ -54,31 +90,24 @@ Mesh::Mesh(const std::string& filepath)
 		}
 	}
 
-	std::vector<glm::vec3> out;
-
 	for (unsigned int i = 0; i < vertexIndices.size(); i++)
 	{
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec3 vertex = vertices[vertexIndex - 1];
+		Vertex vertex;
+		vertex.position = vertices[vertexIndices[i] - 1];
+		vertex.normal = normals[normalIndices[i] - 1];
+		vertex.uv = uvs[uvIndices[i] - 1];
 		out.push_back(vertex);
 	}
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, out.size() * sizeof(glm::vec3), out.data(), GL_STATIC_DRAW);
-
-	this->vertexCount = out.size() * sizeof(glm::vec3);
-}
-
-
-Mesh::~Mesh()
-{
-	glDeleteBuffers(1, &vbo);
 }
 
 GLuint Mesh::GetVBO() const
 {
 	return vbo;
+}
+
+GLuint Mesh::GetVAO() const
+{
+	return vao;
 }
 
 glm::u32 Mesh::GetVertexCount() const
