@@ -41,6 +41,8 @@ System::System(glm::uvec2 screenSize, const std::string& title, int argc, char* 
 	{
 		std::cerr << "Warning: Unable to set VSync" << std::endl;
 	}
+	//Enable depth test
+	glEnable(GL_DEPTH_TEST);
 }
 
 System::~System()
