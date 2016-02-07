@@ -81,6 +81,7 @@
     <ClCompile Include="src\System.cpp" />
     <ClCompile Include="src\systems\Physics.cpp" />
     <ClCompile Include="src\systems\Render.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Application.h" />
@@ -94,6 +95,7 @@
     <ClInclude Include="include\System.h" />
     <ClInclude Include="include\systems\Physics.h" />
     <ClInclude Include="include\systems\Render.h" />
+    <ClInclude Include="include\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

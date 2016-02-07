@@ -20,6 +20,7 @@ public:
 	bool IsInUse() const;
 	void Use() const;
 
+	void SetUniform(const GLchar* name, const int& scalar);
 	void SetUniform(const GLchar* name, const glm::float32& scalar);
 	void SetUniform(const GLchar* name, const glm::vec2& vector);
 	void SetUniform(const GLchar* name, const glm::vec3& vector);

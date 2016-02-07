@@ -45,6 +45,15 @@ void Shader::Use() const
 	glUseProgram(program);
 }
 
+void Shader::SetUniform(const GLchar* name, const int& scalar)
+{
+	if (!IsInUse())
+	{
+		Use();
+	}
+	glUniform1i(glGetUniformLocation(program, name), scalar);
+}
+
 void Shader::SetUniform(const GLchar* name, const glm::float32& scalar)
 {
 	if (!IsInUse())

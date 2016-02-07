@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "AssetManager.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -17,6 +18,7 @@ private:
 	Camera camera;
 	AssetManager<Mesh> meshManager;
 	AssetManager<Shader> shaderManager;
+	AssetManager<Texture> textureManager;
 
 	Shader* shader;
 
