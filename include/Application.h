@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include <kult.hpp>
+
 class Application: public System
 {
 private:
@@ -17,7 +19,9 @@ private:
 	AssetManager<Shader> shaderManager;
 
 	Shader* shader;
-	Mesh* tree;
+
+	kult::entity player;
+	kult::entity tree;
 public:
 	Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]);
 	virtual ~Application();

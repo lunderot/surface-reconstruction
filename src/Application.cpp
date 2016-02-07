@@ -1,13 +1,24 @@
 #include "Application.h"
 
+#include "systems/Physics.h"
+#include "systems/Render.h"
+
 Application::Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]):
 	System(screenSize, title, argc, argv),
 	camera(screenSize, 59.0f, 0.01f, 1000.0f),
 	meshManager("data/models/"),
 	shaderManager("data/shaders/")
 {
-	tree = meshManager.GetAsset("tree.obj");
 	shader = shaderManager.GetAsset("default");
+
+	kult::add<Component::Position>(player) = { glm::vec3(0, 0, 0), glm::vec3(0, 0, 0) };
+	kult::add<Component::Render>(player) = { meshManager.GetAsset("tree.obj") };
+	
+
+	kult::add<Component::Position>(tree) = { glm::vec3(0, 0, 0), glm::vec3(0, 0, 0) };
+	kult::add<Component::Render>(tree) = { meshManager.GetAsset("tree.obj") };
+	kult::add<Component::Physics>(tree) = { glm::vec3(-10, 0, 0), glm::vec3(10, 0, 0) };
+
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -15,6 +26,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 Application::~Application()
 {
+	player.purge();
+	tree.purge();
 }
 
 void Application::HandleEvent(SDL_Event& event)
@@ -34,11 +47,8 @@ void Application::HandleEvent(SDL_Event& event)
 
 void Application::Update(float deltaTime)
 {
-	glm::mat4 m = glm::mat4();
-	m = glm::rotate(m, glm::radians(SDL_GetTicks()*360/10000.0f), glm::vec3(0, 0, 1));
-
-	shader->SetUniform("model", m);
-	shader->SetUniform("projview", camera.GetProjectionView());
+	Systems::Physics(deltaTime);
+	
 }
 
 void Application::Render()
@@ -48,6 +58,5 @@ void Application::Render()
 
 	shader->Use();
 	
-	glBindVertexArray(tree->GetVAO());
-	glDrawArrays(GL_TRIANGLES, 0, tree->GetVertexCount());
+	Systems::Render(shader, &camera);
 }
