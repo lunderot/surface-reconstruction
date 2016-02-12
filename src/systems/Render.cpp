@@ -10,6 +10,7 @@ namespace Systems
 
 	void Render(Shader* shader, Camera* camera)
 	{
+		shader->Use();
 		shader->SetUniform("projview", camera->GetProjectionView());
 		shader->SetUniform("tex", 0);
 

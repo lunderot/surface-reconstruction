@@ -1,6 +1,7 @@
 #include "Shader.h"
 
 #include <iostream>
+#include <SDL_assert.h>
 
 Shader::Shader(const std::string& filename)
 {
@@ -45,57 +46,39 @@ void Shader::Use() const
 	glUseProgram(program);
 }
 
-void Shader::SetUniform(const GLchar* name, const int& scalar)
+void Shader::SetUniform(const GLchar* name, const glm::int32& scalar)
 {
-	if (!IsInUse())
-	{
-		Use();
-	}
+	SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
 	glUniform1i(glGetUniformLocation(program, name), scalar);
 }
 
 void Shader::SetUniform(const GLchar* name, const glm::float32& scalar)
 {
-	if (!IsInUse())
-	{
-		Use();
-	}
+	SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
 	glUniform1f(glGetUniformLocation(program, name), scalar);
 }
 
 void Shader::SetUniform(const GLchar* name, const glm::vec2& vector)
 {
-	if (!IsInUse())
-	{
-		Use();
-	}
-	glUniform2f(glGetUniformLocation(program, name), vector.x, vector.y);
+	SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
+	glUniform2fv(glGetUniformLocation(program, name), 1, glm::value_ptr(vector));
 }
 
 void Shader::SetUniform(const GLchar* name, const glm::vec3& vector)
 {
-	if (!IsInUse())
-	{
-		Use();
-	}
-	glUniform3f(glGetUniformLocation(program, name), vector.x, vector.y, vector.z);
+	SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
+	glUniform3fv(glGetUniformLocation(program, name), 1, glm::value_ptr(vector));
 }
 
 void Shader::SetUniform(const GLchar* name, const glm::vec4& vector)
 {
-	if (!IsInUse())
-	{
-		Use();
-	}
-	glUniform4f(glGetUniformLocation(program, name), vector.x, vector.y, vector.z, vector.z);
+	SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
+	glUniform4fv(glGetUniformLocation(program, name), 1, glm::value_ptr(vector));
 }
 
 void Shader::SetUniform(const GLchar* name, const glm::mat4& matrix)
 {
-	if (!IsInUse())
-	{
-		Use();
-	}
+	SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
 	glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
@@ -130,13 +113,11 @@ void Shader::CheckShaderError(GLuint shader, GLuint flag, const std::string& err
 	GLint success = 0;
 	GLchar error[1024] = { 0 };
 
-
 	glGetShaderiv(shader, flag, &success);
 
 	if (success == GL_FALSE)
 	{
 		glGetShaderInfoLog(shader, sizeof(error), NULL, error);
-
 		throw std::runtime_error(errorMessage + ": " + error);
 	}
 }
