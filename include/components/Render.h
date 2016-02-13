@@ -10,6 +10,7 @@ namespace Component
 	{
 		Mesh* mesh;
 		Texture* texture;
+		bool scaleUv;
 		template<typename T> friend T&operator<<(T &os, const RenderData &self) {
 			return os << "mesh", os;
 		}

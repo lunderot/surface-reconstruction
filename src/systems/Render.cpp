@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace Systems
 {
@@ -15,23 +15,22 @@ namespace Systems
 		shader->SetUniform("tex", 0);
 
 		for (auto &id : join<Component::Position, Component::Render>()) {
-			Mesh* mesh = get<Component::Render>(id).mesh;
-			Texture* texture = get<Component::Render>(id).texture;
+			auto& renderData = get<Component::Render>(id);
+			auto& positionData = get<Component::Position>(id);
 
-			glm::vec3 pos = kult::get<Component::Position>(id).pos;
-			glm::vec3 rot = kult::get<Component::Position>(id).rot;
+			glm::mat4 model = glm::translate(positionData.pos);
+			model *= glm::mat4_cast(positionData.rot);
+			model = glm::scale(model, positionData.scale);
 
-			glm::mat4 m = glm::translate(pos);
-			m = glm::rotate(m, rot.x, glm::vec3(1, 0, 0));
-			m = glm::rotate(m, rot.y, glm::vec3(0, 1, 0));
-
-			shader->SetUniform("model", m);
+			shader->SetUniform("model", model);
+			shader->SetUniform("scale", positionData.scale);
+			shader->SetUniform("scaleuv", renderData.scaleUv);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture->GetTexture());
+			glBindTexture(GL_TEXTURE_2D, renderData.texture->GetTexture());
 			
-			glBindVertexArray(mesh->GetVAO());
-			glDrawArrays(GL_TRIANGLES, 0, mesh->GetVertexCount());
+			glBindVertexArray(renderData.mesh->GetVAO());
+			glDrawArrays(GL_TRIANGLES, 0, renderData.mesh->GetVertexCount());
 		}
 	}
 }

@@ -22,7 +22,7 @@ private:
 
 	Shader* shader;
 
-	kult::entity player;
+	kult::entity cube;
 	kult::entity tree;
 public:
 	Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]);

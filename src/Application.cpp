@@ -8,18 +8,35 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	camera(screenSize, 59.0f, 0.01f, 1000.0f),
 	meshManager("data/models/"),
 	shaderManager("data/shaders/"),
-	textureManager("data/textures/")
+	textureManager("data/textures/"),
+	shader(shaderManager.GetAsset("default"))
 {
-	shader = shaderManager.GetAsset("default");
+	kult::add<Component::Position>(cube) = {
+		glm::vec3(0, 0, 0),
+		glm::quat(),
+		glm::vec3(30, 30, 1)
+	};
+	kult::add<Component::Render>(cube) = {
+		meshManager.GetAsset("cube.obj"),
+		textureManager.GetAsset("wood.raw"),
+		true
+	};
 
-	kult::add<Component::Position>(player) = { glm::vec3(4, 0, 0), glm::vec3(0, 0, 0) };
-	kult::add<Component::Render>(player) = { meshManager.GetAsset("capsule.obj"), textureManager.GetAsset("capsule.raw") };
-	
-
-	kult::add<Component::Position>(tree) = { glm::vec3(0, 0, 0), glm::vec3(0, 0, 0) };
-	kult::add<Component::Render>(tree) = { meshManager.GetAsset("tree.obj"), textureManager.GetAsset("missing2.raw") };
-	kult::add<Component::Physics>(tree) = { glm::vec3(-10, 0, 0), glm::vec3(10, 0, 0) };
-
+	kult::add<Component::Position>(tree) = {
+		glm::vec3(10, 0, 0),
+		glm::quat(),
+		glm::vec3(1, 1, 1)
+	};
+	kult::add<Component::Render>(tree) = {
+		meshManager.GetAsset("tree.obj"),
+		textureManager.GetAsset("missing.raw"),
+		false
+	};
+	kult::add<Component::Physics>(tree) = {
+		glm::vec3(0, 0, 0),
+		glm::zero<glm::vec3>(),
+		glm::vec3(0, 0, 1)
+	};
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -27,7 +44,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 Application::~Application()
 {
-	player.purge();
+	cube.purge();
 	tree.purge();
 }
 
@@ -49,13 +66,12 @@ void Application::HandleEvent(SDL_Event& event)
 void Application::Update(float deltaTime)
 {
 	Systems::Physics(deltaTime);
-	
 }
 
 void Application::Render()
 {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	Systems::Render(shader, &camera);
 }

@@ -2,6 +2,8 @@
 
 uniform mat4 projview;
 uniform mat4 model;
+uniform vec3 scale;
+uniform bool scaleuv;
 
 layout(location=0) in vec3 position;
 layout(location=1) in vec3 normal;
@@ -13,6 +15,14 @@ out vec2 uv_out;
 void main()
 {
 	normal_out = normal;
-	uv_out = uv;
+	if(scaleuv)
+	{
+		uv_out.x = uv.x * max(scale.x, scale.z);
+		uv_out.y = uv.y * scale.y;
+	}
+	else
+	{
+		uv_out = uv;
+	}
 	gl_Position = projview * model * vec4(position, 1);
 }
