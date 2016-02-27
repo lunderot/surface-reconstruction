@@ -5,9 +5,8 @@
 #include "components/Render.h"
 
 #include "../Shader.h"
-#include "../Camera.h"
 
 namespace Systems
 {
-	void Render(Shader* shader, Camera* camera);
+	void Render(Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far);
 }

@@ -2,15 +2,22 @@
 
 #include "systems/Physics.h"
 #include "systems/Render.h"
+#include "systems/Freelook.h"
 
 Application::Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]):
 	System(screenSize, title, argc, argv),
-	camera(screenSize, 59.0f, 0.01f, 1000.0f),
 	meshManager("data/models/"),
 	shaderManager("data/shaders/"),
 	textureManager("data/textures/"),
 	shader(shaderManager.GetAsset("default"))
 {
+	kult::add<Component::Position>(camera) = {
+		glm::vec3(0, 0, 2)
+	};
+	kult::add<Component::Freelook>(camera) = {
+		0.002f
+	};
+
 	kult::add<Component::Position>(cube) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
@@ -60,7 +67,7 @@ void Application::HandleEvent(SDL_Event& event)
 	default:
 		break;
 	}
-	camera.HandleEvent(event);
+	Systems::HandleFreelookEvent(event);
 }
 
 void Application::Update(float deltaTime)
@@ -72,6 +79,5 @@ void Application::Render()
 {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Systems::Render(shader, &camera);
+	Systems::Render(shader, camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
 }

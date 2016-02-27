@@ -2,7 +2,6 @@
 
 #include "System.h"
 #include "Shader.h"
-#include "Camera.h"
 #include "AssetManager.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -15,13 +14,13 @@
 class Application: public System
 {
 private:
-	Camera camera;
 	AssetManager<Mesh> meshManager;
 	AssetManager<Shader> shaderManager;
 	AssetManager<Texture> textureManager;
 
 	Shader* shader;
 
+	kult::entity camera;
 	kult::entity cube;
 	kult::entity tree;
 public:
