@@ -3,6 +3,9 @@
 #include "systems/Physics.h"
 #include "systems/Render.h"
 #include "systems/Freelook.h"
+#include "systems/Freemove.h"
+
+#include <glm/gtc/random.hpp>
 
 Application::Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]):
 	System(screenSize, title, argc, argv),
@@ -16,6 +19,10 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	};
 	kult::add<Component::Freelook>(camera) = {
 		0.002f
+	};
+	kult::add<Component::Physics>(camera);
+	kult::add<Component::Freemove>(camera) = {
+		5.0f
 	};
 
 	kult::add<Component::Position>(cube) = {
@@ -51,6 +58,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 Application::~Application()
 {
+	camera.purge();
 	cube.purge();
 	tree.purge();
 }
@@ -72,6 +80,7 @@ void Application::HandleEvent(SDL_Event& event)
 
 void Application::Update(float deltaTime)
 {
+	Systems::UpdateFreemove();
 	Systems::Physics(deltaTime);
 }
 
