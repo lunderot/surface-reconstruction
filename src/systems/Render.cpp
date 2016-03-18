@@ -10,7 +10,7 @@ namespace Systems
 {
 	using namespace kult;
 
-	void Render(Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far)
+	void Render(AssetManager::Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far)
 	{
 		auto& cameraPositionData = get<Component::Position>(camera);
 		auto& cameraData = get<Component::Freelook>(camera);
