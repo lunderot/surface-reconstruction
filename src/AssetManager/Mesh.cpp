@@ -85,7 +85,7 @@ namespace AssetManager
 		return vertexCount;
 	}
 
-	void Mesh::Load(std::istream* buffer)
+	void Mesh::Load(std::istream* buffer, const std::string& filename)
 	{
 		std::vector<Vertex> out;
 		LoadMesh(buffer, out);

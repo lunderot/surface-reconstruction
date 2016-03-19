@@ -114,7 +114,7 @@ namespace AssetManager
 		}
 	}
 
-	void Shader::Load(std::istream* buffer)
+	void Shader::Load(std::istream* buffer, const std::string& filename)
 	{
 		unsigned first, last;
 

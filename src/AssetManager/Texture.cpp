@@ -17,7 +17,7 @@ namespace AssetManager
 		return tex;
 	}
 
-	void Texture::Load(std::istream* buffer)
+	void Texture::Load(std::istream* buffer, const std::string& filename)
 	{
 		std::vector<char> textureData;
 		unsigned int width, height;

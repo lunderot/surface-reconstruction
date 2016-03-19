@@ -12,6 +12,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	meshManager("data/models/"),
 	shaderManager("data/shaders/"),
 	textureManager("data/textures/"),
+	configManager("data/config/"),
 	shader(shaderManager.Get("default.shader"))
 {
 	kult::add<Component::Position>(camera) = {
@@ -51,6 +52,12 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		glm::zero<glm::vec3>(),
 		glm::vec3(0, 0, 1)
 	};
+
+
+	int gold = configManager.Get("iGold")->Get<int>();
+	std::string name = configManager.Get("sPlayerName")->Get<std::string>();
+	auto speed = configManager.Get("fSpeed")->Get<float>();
+
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }

@@ -32,6 +32,6 @@ namespace AssetManager
 		GLuint GetVAO() const;
 		glm::u32 GetVertexCount() const;
 
-		void Load(std::istream* buffer);
+		void Load(std::istream* buffer, const std::string& filename);
 	};
 }

@@ -10,6 +10,6 @@ namespace AssetManager
 		Asset();
 		virtual ~Asset();
 
-		virtual void Load(std::istream* buffer) = 0;
+		virtual void Load(std::istream* buffer, const std::string& filename) = 0;
 	};
 }

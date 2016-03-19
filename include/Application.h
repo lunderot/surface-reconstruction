@@ -5,6 +5,7 @@
 #include "AssetManager/AssetManager.h"
 #include "AssetManager/Mesh.h"
 #include "AssetManager/Texture.h"
+#include "AssetManager/Config.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -17,6 +18,7 @@ private:
 	AssetManager::AssetManager<AssetManager::Mesh> meshManager;
 	AssetManager::AssetManager<AssetManager::Shader> shaderManager;
 	AssetManager::AssetManager<AssetManager::Texture> textureManager;
+	AssetManager::AssetManager<AssetManager::Config> configManager;
 
 	AssetManager::Shader* shader;
 

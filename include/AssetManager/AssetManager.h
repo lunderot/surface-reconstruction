@@ -49,7 +49,7 @@ namespace AssetManager
 			//Load and return the asset if it is not already loaded
 			std::ifstream inputFile(assetPath + name, std::ios::binary);
 			asset = new T();
-			asset->Load(&inputFile);
+			asset->Load(&inputFile, name);
 
 			assets[name] = asset;
 		}

@@ -18,7 +18,7 @@ namespace AssetManager
 		Texture();
 		~Texture();
 
-		void Load(std::istream* buffer);
+		void Load(std::istream* buffer, const std::string& filename);
 
 		GLuint GetTexture() const;
 	};
