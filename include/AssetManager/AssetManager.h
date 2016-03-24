@@ -48,10 +48,27 @@ namespace AssetManager
 		{
 			//Load and return the asset if it is not already loaded
 			std::ifstream inputFile(assetPath + name, std::ios::binary);
-			asset = new T();
-			asset->Load(&inputFile, name);
+			if (inputFile.good())
+			{
+				asset = new T();
+				std::size_t position = name.find_last_of('/');
+				std::string filename;
+				if (position == std::string::npos)
+				{
+					filename = name;
+				}
+				else
+				{
+					filename = name.substr(position + 1);
+				}
+				asset->Load(&inputFile, filename);
 
-			assets[name] = asset;
+				assets[name] = asset;
+			}
+			else
+			{
+				throw std::runtime_error("Failed to open asset: " + name);
+			}
 		}
 		return asset;
 	}

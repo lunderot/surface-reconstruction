@@ -29,6 +29,7 @@ namespace AssetManager
 			floatValue = std::stof(str);
 			break;
 		default:
+			throw std::runtime_error("Invalid config variable type");
 			break;
 		}
 	}

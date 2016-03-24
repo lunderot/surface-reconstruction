@@ -19,11 +19,11 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		glm::vec3(0, 0, 2)
 	};
 	kult::add<Component::Freelook>(camera) = {
-		0.002f
+		configManager.Get("camera/fSensitivity")->Get<glm::f32>()
 	};
 	kult::add<Component::Physics>(camera);
 	kult::add<Component::Freemove>(camera) = {
-		5.0f
+		configManager.Get("camera/fSpeed")->Get<glm::f32>()
 	};
 
 	kult::add<Component::Position>(cube) = {
@@ -52,12 +52,6 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		glm::zero<glm::vec3>(),
 		glm::vec3(0, 0, 1)
 	};
-
-
-	int gold = configManager.Get("iGold")->Get<int>();
-	std::string name = configManager.Get("sPlayerName")->Get<std::string>();
-	auto speed = configManager.Get("fSpeed")->Get<float>();
-
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
