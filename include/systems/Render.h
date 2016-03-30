@@ -4,9 +4,9 @@
 #include "components/Position.h"
 #include "components/Render.h"
 
-#include "../Shader.h"
+#include "../AssetManager/Shader.h"
 
 namespace Systems
 {
-	void Render(Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far);
+	void Render(AssetManager::Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far);
 }

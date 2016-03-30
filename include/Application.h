@@ -1,10 +1,11 @@
 #pragma once
 
 #include "System.h"
-#include "Shader.h"
-#include "AssetManager.h"
-#include "Mesh.h"
-#include "Texture.h"
+#include "AssetManager/Shader.h"
+#include "AssetManager/AssetManager.h"
+#include "AssetManager/Mesh.h"
+#include "AssetManager/Texture.h"
+#include "AssetManager/Config.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -14,11 +15,12 @@
 class Application: public System
 {
 private:
-	AssetManager<Mesh> meshManager;
-	AssetManager<Shader> shaderManager;
-	AssetManager<Texture> textureManager;
+	AssetManager::AssetManager<AssetManager::Mesh> meshManager;
+	AssetManager::AssetManager<AssetManager::Shader> shaderManager;
+	AssetManager::AssetManager<AssetManager::Texture> textureManager;
+	AssetManager::AssetManager<AssetManager::Config> configManager;
 
-	Shader* shader;
+	AssetManager::Shader* shader;
 
 	kult::entity camera;
 	kult::entity cube;

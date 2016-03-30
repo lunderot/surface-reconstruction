@@ -12,17 +12,18 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	meshManager("data/models/"),
 	shaderManager("data/shaders/"),
 	textureManager("data/textures/"),
-	shader(shaderManager.GetAsset("default"))
+	configManager("data/config/"),
+	shader(shaderManager.Get("default.shader"))
 {
 	kult::add<Component::Position>(camera) = {
 		glm::vec3(0, 0, 2)
 	};
 	kult::add<Component::Freelook>(camera) = {
-		0.002f
+		configManager.Get("camera/fSensitivity")->Get<glm::f32>()
 	};
 	kult::add<Component::Physics>(camera);
 	kult::add<Component::Freemove>(camera) = {
-		5.0f
+		configManager.Get("camera/fSpeed")->Get<glm::f32>()
 	};
 
 	kult::add<Component::Position>(cube) = {
@@ -31,8 +32,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		glm::vec3(30, 30, 1)
 	};
 	kult::add<Component::Render>(cube) = {
-		meshManager.GetAsset("cube.obj"),
-		textureManager.GetAsset("wood.raw"),
+		meshManager.Get("cube.obj"),
+		textureManager.Get("wood.raw"),
 		true
 	};
 
@@ -42,8 +43,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		glm::vec3(1, 1, 1)
 	};
 	kult::add<Component::Render>(tree) = {
-		meshManager.GetAsset("tree.obj"),
-		textureManager.GetAsset("missing.raw"),
+		meshManager.Get("tree.obj"),
+		textureManager.Get("missing.raw"),
 		false
 	};
 	kult::add<Component::Physics>(tree) = {

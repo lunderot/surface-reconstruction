@@ -73,33 +73,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AssetManager\Asset.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\AssetManager\Config.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\AssetManager\Mesh.cpp" />
+    <ClCompile Include="src\AssetManager\Shader.cpp" />
     <ClCompile Include="src\System.cpp" />
     <ClCompile Include="src\systems\Freelook.cpp" />
     <ClCompile Include="src\systems\Freemove.cpp" />
     <ClCompile Include="src\systems\Physics.cpp" />
     <ClCompile Include="src\systems\Render.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\AssetManager\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Application.h" />
-    <ClInclude Include="include\AssetManager.h" />
+    <ClInclude Include="include\AssetManager\Asset.h" />
+    <ClInclude Include="include\AssetManager\AssetManager.h" />
+    <ClInclude Include="include\AssetManager\Config.h" />
     <ClInclude Include="include\components\Freelook.h" />
     <ClInclude Include="include\components\Freemove.h" />
     <ClInclude Include="include\components\Position.h" />
     <ClInclude Include="include\components\Render.h" />
     <ClInclude Include="include\components\Physics.h" />
-    <ClInclude Include="include\Mesh.h" />
-    <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\AssetManager\Mesh.h" />
+    <ClInclude Include="include\AssetManager\Shader.h" />
     <ClInclude Include="include\System.h" />
     <ClInclude Include="include\systems\Freelook.h" />
     <ClInclude Include="include\systems\Freemove.h" />
     <ClInclude Include="include\systems\Physics.h" />
     <ClInclude Include="include\systems\Render.h" />
-    <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="include\AssetManager\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
