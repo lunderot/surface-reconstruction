@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Asset.h"
+#include <string>
+#include <istream>
 
 namespace AssetManager
 {
-	class Config : public Asset
+	class Config
 	{
 	private:
 		union
@@ -14,7 +15,7 @@ namespace AssetManager
 			int integerValue;
 		};
 	public:
-		Config();
+		Config(std::istream* buffer, const std::string& filename);
 		~Config();
 
 		template<typename T>
