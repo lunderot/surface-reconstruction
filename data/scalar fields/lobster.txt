@@ -1,0 +1,6 @@
+Data is stored in these files as bytes. In each of these files, data is stored in the following order:
+
+    For each Z slice,
+        For each Y column,
+            For each X row,
+                Store_data(data(x,y,z)) 
