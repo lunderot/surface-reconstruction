@@ -5,6 +5,7 @@
 
 #include <gl/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/random.hpp>
 
 namespace AssetManager
 {
@@ -15,6 +16,7 @@ namespace AssetManager
 		{
 			glm::vec3 position;
 			glm::f32 radius;
+			glm::f32 scalar;
 		};
 		GLuint vbo;
 		GLuint vao;
