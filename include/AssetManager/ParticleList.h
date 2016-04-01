@@ -11,7 +11,15 @@ namespace AssetManager
 	class ParticleList
 	{
 	private:
-		std::vector<glm::vec3> particles;
+		struct Particle
+		{
+			glm::vec3 position;
+			glm::f32 radius;
+		};
+		GLuint vbo;
+		GLuint vao;
+		unsigned int vertexCount;
+		std::vector<Particle> particles;
 		glm::vec3 min;
 		glm::vec3 max;
 	public:
@@ -20,6 +28,10 @@ namespace AssetManager
 
 		void Load(std::istream* buffer, const std::string& filename);
 
-		const std::vector<glm::vec3>* GetParticles() const;
+		const std::vector<Particle>* GetParticles() const;
+
+		GLuint GetVBO() const;
+		GLuint GetVAO() const;
+		glm::u32 GetVertexCount() const;
 	};
 }

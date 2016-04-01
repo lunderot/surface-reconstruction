@@ -10,7 +10,8 @@ namespace AssetManager
 
 	ParticleList::~ParticleList()
 	{
-
+		glDeleteBuffers(1, &vbo);
+		glDeleteVertexArrays(1, &vao);
 	}
 
 	void ParticleList::Load(std::istream* buffer, const std::string& filename)
@@ -43,12 +44,48 @@ namespace AssetManager
 			{
 				min.z = vertex.z;
 			}
-			particles.push_back(vertex);
+			particles.push_back({ vertex, 1.0f });
 		}
+
+		//Generate vertex buffer and vertex array object
+		glGenBuffers(1, &vbo);
+		glGenVertexArrays(1, &vao);
+
+		//Bind the buffers
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+		//Load the vertex buffer
+		glBufferData(GL_ARRAY_BUFFER, particles.size() * sizeof(Particle), particles.data(), GL_STATIC_DRAW);
+
+		//Enable the shader attributes
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)));
+		glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+		glBindVertexArray(0);
+		vertexCount = particles.size();
 	}
 
-	const std::vector<glm::vec3>* ParticleList::GetParticles() const
+	const std::vector<ParticleList::Particle>* ParticleList::GetParticles() const
 	{
 		return &particles;
+	}
+
+	GLuint ParticleList::GetVBO() const
+	{
+		return vbo;
+	}
+
+	GLuint ParticleList::GetVAO() const
+	{
+		return vao;
+	}
+
+	glm::u32 ParticleList::GetVertexCount() const
+	{
+		return vertexCount;
 	}
 }

@@ -54,6 +54,9 @@
     <ClCompile Include="include\AssetManager\ParticleList.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\PointRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\System.h">
@@ -102,6 +105,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AssetManager\Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\systems\PointRender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\components\PointRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

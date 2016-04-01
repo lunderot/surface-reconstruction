@@ -4,6 +4,7 @@
 #include "systems/Render.h"
 #include "systems/Freelook.h"
 #include "systems/Freemove.h"
+#include "systems/PointRender.h"
 
 #include <glm/gtc/random.hpp>
 
@@ -38,23 +39,14 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		true
 	};
 
-	auto pl = particleManager.Get("2.bin")->GetParticles();
 
-	for (auto i: *pl)
+	kult::add<Component::Position>(tree) = { glm::vec3(0, 0, 0),
+		glm::quat(),
+		glm::vec3(1, 1, 1) };
+	kult::add<Component::PointRender>(tree) =
 	{
-		kult::entity e;
-
-		kult::add<Component::Position>(e) = {
-			i * 10.0f,
-			glm::quat(),
-			glm::vec3(1, 1, 1) * 0.01f
-		};
-		kult::add<Component::Render>(e) = {
-			meshManager.Get("cube.obj"),
-			textureManager.Get("wood.raw"),
-			false
-		};
-	}
+		particleManager.Get("1.bin")
+	};
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -93,4 +85,5 @@ void Application::Render()
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Systems::Render(shader, camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
+	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
 }
