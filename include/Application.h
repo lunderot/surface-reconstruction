@@ -26,7 +26,7 @@ private:
 
 	kult::entity camera;
 	kult::entity cube;
-	kult::entity tree;
+	kult::entity particleCloud;
 public:
 	Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]);
 	virtual ~Application();

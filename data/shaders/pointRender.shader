@@ -6,10 +6,11 @@
 	uniform vec3 scale;
 
 	layout(location=0) in vec3 position;
-	layout(location=1) in float scale;
+	layout(location=1) in float radius;
 
 	void main()
 	{
+		gl_PointSize = radius * 2.0f;
 		gl_Position = projview * model * vec4(position, 1);
 	}
 VS>>>

@@ -17,6 +17,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	particleManager("data/particleSets/"),
 	shader(shaderManager.Get("default.shader"))
 {
+	//Camera entity
 	kult::add<Component::Position>(camera) = {
 		glm::vec3(0, 0, 2)
 	};
@@ -28,10 +29,11 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		configManager.Get("camera/fSpeed")->Get<glm::f32>()
 	};
 
+	//Floor with wood texture
 	kult::add<Component::Position>(cube) = {
-		glm::vec3(0, 0, 2),
+		glm::vec3(0, 0, 0),
 		glm::quat(),
-		glm::vec3(30, 30, 1)
+		glm::vec3(30, 30, 0.01)
 	};
 	kult::add<Component::Render>(cube) = {
 		meshManager.Get("cube.obj"),
@@ -39,11 +41,12 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		true
 	};
 
-
-	kult::add<Component::Position>(tree) = { glm::vec3(0, 0, 0),
+	//Particle cloud
+	kult::add<Component::Position>(particleCloud) = {
+		glm::vec3(0, 0, 10),
 		glm::quat(),
-		glm::vec3(1, 1, 1) };
-	kult::add<Component::PointRender>(tree) =
+		glm::vec3(10, 10, 10) };
+	kult::add<Component::PointRender>(particleCloud) =
 	{
 		particleManager.Get("1.bin")
 	};
@@ -56,7 +59,7 @@ Application::~Application()
 {
 	camera.purge();
 	cube.purge();
-	tree.purge();
+	particleCloud.purge();
 }
 
 void Application::HandleEvent(SDL_Event& event)

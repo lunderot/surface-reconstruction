@@ -43,6 +43,9 @@ System::System(glm::uvec2 screenSize, const std::string& title, int argc, char* 
 	}
 	//Enable depth test
 	glEnable(GL_DEPTH_TEST);
+
+	//Enable point size
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }
 
 System::~System()

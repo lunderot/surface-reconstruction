@@ -44,7 +44,7 @@ namespace AssetManager
 			{
 				min.z = vertex.z;
 			}
-			particles.push_back({ vertex, 1.0f });
+			particles.push_back({ vertex, 4.0f }); //TODO: This value shouldn't be hardcoded to 4.0f
 		}
 
 		//Generate vertex buffer and vertex array object
