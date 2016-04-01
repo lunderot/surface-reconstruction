@@ -17,6 +17,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	particleManager("data/particleSets/"),
 	shader(shaderManager.Get("default.shader"))
 {
+
+	ImGui_ImplSdlGL3_Init(window);
+
 	//Camera entity
 	kult::add<Component::Position>(camera) = {
 		glm::vec3(0, 0, 2)
@@ -51,12 +54,13 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		particleManager.Get("1.bin")
 	};
 
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 
 Application::~Application()
 {
+	ImGui_ImplSdlGL3_Shutdown();
 	camera.purge();
 	cube.purge();
 	particleCloud.purge();
@@ -89,4 +93,39 @@ void Application::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Systems::Render(shader, camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
 	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
+
+	DrawGUI();
+}
+
+void Application::DrawGUI()
+{
+	ImGui_ImplSdlGL3_NewFrame(window);
+	// 1. Show a simple window
+	// Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
+	{
+		static float f = 0.0f;
+		ImGui::Text("Hello, world!");
+		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+		ImGui::ColorEdit3("clear color", (float*)&clear_color);
+		if (ImGui::Button("Test Window")) show_test_window ^= 1;
+		if (ImGui::Button("Another Window")) show_another_window ^= 1;
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+	// 2. Show another simple window, this time using an explicit Begin/End pair
+	if (show_another_window)
+	{
+		ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+		ImGui::Begin("Another Window", &show_another_window);
+		ImGui::Text("Hello");
+		ImGui::End();
+	}
+
+	// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
+	if (show_test_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
+		ImGui::ShowTestWindow(&show_test_window);
+	}
+	ImGui::Render();
 }

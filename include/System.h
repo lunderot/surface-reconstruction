@@ -10,7 +10,7 @@
 
 class System
 {
-private:
+protected:
 	glm::uvec2 screenSize;
 	bool running;
 

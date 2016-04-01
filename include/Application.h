@@ -13,6 +13,9 @@
 
 #include <kult.hpp>
 
+#include <imgui.h>
+#include "imgui_impl_sdl_gl3.h"
+
 class Application: public System
 {
 private:
@@ -27,6 +30,12 @@ private:
 	kult::entity camera;
 	kult::entity cube;
 	kult::entity particleCloud;
+
+	bool show_test_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImColor(114, 144, 154);
+	void DrawGUI();
+
 public:
 	Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]);
 	virtual ~Application();
