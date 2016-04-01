@@ -60,13 +60,16 @@
     <ClCompile Include="src\imgui_impl_sdl_gl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\VertexGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="external\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="external\imgui\imgui_draw.cpp">
+    <ClCompile Include="external\imgui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="external\imgui\imgui_demo.cpp">
+    <ClCompile Include="external\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="external\imgui\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VertexGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

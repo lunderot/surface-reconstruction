@@ -8,6 +8,32 @@ namespace AssetManager
 		Load(buffer, filename);
 	}
 
+	ParticleList::ParticleList(std::vector<Particle>* particles)
+	{
+		this->particles = std::vector<Particle>(particles->begin(), particles->end());
+
+		//Generate vertex buffer and vertex array object
+		glGenBuffers(1, &vbo);
+		glGenVertexArrays(1, &vao);
+
+		//Bind the buffers
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+		//Load the vertex buffer
+		glBufferData(GL_ARRAY_BUFFER, this->particles.size() * sizeof(Particle), this->particles.data(), GL_STATIC_DRAW);
+
+		//Enable the shader attributes
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)));
+		glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+		glBindVertexArray(0);
+		vertexCount = this->particles.size();
+	}
+
 	ParticleList::~ParticleList()
 	{
 		glDeleteBuffers(1, &vbo);
@@ -44,7 +70,7 @@ namespace AssetManager
 			{
 				min.z = vertex.z;
 			}
-			particles.push_back({ vertex, 4.0f }); //TODO: This value shouldn't be hardcoded to 4.0f
+			particles.push_back({ vertex, 0.038f }); //TODO: This value shouldn't be hardcoded to 0.038f
 		}
 
 		//Generate vertex buffer and vertex array object
@@ -72,6 +98,16 @@ namespace AssetManager
 	const std::vector<ParticleList::Particle>* ParticleList::GetParticles() const
 	{
 		return &particles;
+	}
+
+	glm::vec3 ParticleList::GetMin() const
+	{
+		return min;
+	}
+
+	glm::vec3 ParticleList::GetMax() const
+	{
+		return max;
 	}
 
 	GLuint ParticleList::GetVBO() const

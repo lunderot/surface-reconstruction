@@ -91,6 +91,7 @@
     <ClCompile Include="src\systems\PointRender.cpp" />
     <ClCompile Include="src\systems\Render.cpp" />
     <ClCompile Include="src\AssetManager\Texture.cpp" />
+    <ClCompile Include="src\VertexGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\imgui\imgui.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="include\systems\PointRender.h" />
     <ClInclude Include="include\systems\Render.h" />
     <ClInclude Include="include\AssetManager\Texture.h" />
+    <ClInclude Include="include\VertexGrid.h" />
     <ClInclude Include="src\imgui_impl_sdl_gl3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

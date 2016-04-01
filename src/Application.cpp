@@ -54,9 +54,30 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		particleManager.Get("1.bin")
 	};
 
-	//SDL_SetRelativeMouseMode(SDL_TRUE);
-}
+	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
 
+	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), particleList->GetParticles()->at(0).radius);
+
+	std::vector<AssetManager::ParticleList::Particle> particles;
+	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
+
+	for (int i = 0; i < vertices->size(); i++)
+	{
+		particles.push_back({ vertices->at(i).position, 0.038f});
+	}
+
+	kult::add<Component::Position>(vertexParticles) = {
+		glm::vec3(0, 0, 0),
+		glm::quat(),
+		glm::vec3(10, 10, 10)
+	};
+	kult::add<Component::PointRender>(vertexParticles) =
+	{
+		new AssetManager::ParticleList(&particles)
+	};
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+}
 
 Application::~Application()
 {
@@ -99,7 +120,7 @@ void Application::Render()
 	Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
 	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
 
-	DrawGUI();
+	//DrawGUI();
 }
 
 void Application::DrawGUI()
