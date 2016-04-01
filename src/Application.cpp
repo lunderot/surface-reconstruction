@@ -14,10 +14,15 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	shaderManager("data/shaders/"),
 	textureManager("data/textures/"),
 	configManager("data/config/"),
-	particleManager("data/particleSets/")
+	particleManager("data/particleSets/"),
+	showGui(false),
+	showInfoBox(true),
+	clearColor(0.2f, 0.2f, 0.2f)
 {
 
 	ImGui_ImplSdlGL3_Init(window);
+	//Set the window alpha
+	ImGui::GetStyle().WindowFillAlphaDefault = 0.9f;
 
 	//Camera entity
 	kult::add<Component::Position>(camera) = {
@@ -53,10 +58,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	{
 		particleManager.Get("1.bin")
 	};
-
-	//SDL_SetRelativeMouseMode(SDL_TRUE);
 }
-
 
 Application::~Application()
 {
@@ -70,20 +72,30 @@ void Application::HandleEvent(SDL_Event& event)
 {
 	switch (event.type)
 	{
-	case SDL_MOUSEBUTTONDOWN:
+	case SDL_KEYUP:
 	{
-		std::cout << "Mouse button down" << std::endl;
+		if (event.key.keysym.sym == SDLK_F1)
+		{
+			showGui = !showGui;
+		}
 		break;
 	}
 	default:
 		break;
 	}
-	Systems::HandleFreelookEvent(event);
+	if (!showGui)
+	{
+		Systems::HandleFreelookEvent(event);
+	}
 }
 
 void Application::Update(float deltaTime)
 {
-	Systems::UpdateFreemove();
+	SDL_SetRelativeMouseMode(static_cast<SDL_bool>(!showGui));
+	if (!showGui)
+	{
+		Systems::UpdateFreemove();
+	}
 	Systems::Physics(deltaTime);
 }
 
@@ -94,43 +106,33 @@ void Application::Render()
 	glm::f32 far = configManager.Get("camera/fFar")->Get<glm::f32>();
 	glm::uvec2 screenSize = GetScreenSize();
 
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
 	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
 
-	DrawGUI();
+	RenderGUI();
 }
 
-void Application::DrawGUI()
+void Application::RenderGUI()
 {
 	ImGui_ImplSdlGL3_NewFrame(window);
-	// 1. Show a simple window
-	// Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
+	if (showGui)
 	{
-		static float f = 0.0f;
-		ImGui::Text("Hello, world!");
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-		ImGui::ColorEdit3("clear color", (float*)&clear_color);
-		if (ImGui::Button("Test Window")) show_test_window ^= 1;
-		if (ImGui::Button("Another Window")) show_another_window ^= 1;
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	}
-
-	// 2. Show another simple window, this time using an explicit Begin/End pair
-	if (show_another_window)
-	{
-		ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
-		ImGui::Begin("Another Window", &show_another_window);
-		ImGui::Text("Hello");
+		ImGui::SetNextWindowSize(ImVec2(400, 660));
+		ImGui::SetNextWindowPos(ImVec2(10, 50));
+		ImGui::Begin("Settings", &showGui, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+			ImGui::ColorEdit3("clear color", glm::value_ptr(clearColor));
 		ImGui::End();
 	}
 
-	// 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-	if (show_test_window)
+	if (showInfoBox)
 	{
-		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
-		ImGui::ShowTestWindow(&show_test_window);
+		ImGui::SetNextWindowSize(ImVec2(400, 20));
+		ImGui::SetNextWindowPos(ImVec2(10, 10));
+		ImGui::Begin("Info", &showInfoBox, ImVec2(0, 0), 0.3f, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
+			ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
 	}
 	ImGui::Render();
 }
