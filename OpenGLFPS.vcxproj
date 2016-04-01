@@ -73,6 +73,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\AssetManager\ParticleList.h" />
+    <ClCompile Include="src\AssetManager\ParticleList.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\AssetManager\Config.cpp" />
     <ClCompile Include="src\main.cpp" />

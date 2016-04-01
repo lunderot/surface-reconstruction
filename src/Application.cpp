@@ -13,6 +13,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	shaderManager("data/shaders/"),
 	textureManager("data/textures/"),
 	configManager("data/config/"),
+	particleManager("data/particleSets/"),
 	shader(shaderManager.Get("default.shader"))
 {
 	kult::add<Component::Position>(camera) = {
@@ -27,7 +28,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	};
 
 	kult::add<Component::Position>(cube) = {
-		glm::vec3(0, 0, 0),
+		glm::vec3(0, 0, 2),
 		glm::quat(),
 		glm::vec3(30, 30, 1)
 	};
@@ -37,21 +38,23 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		true
 	};
 
-	kult::add<Component::Position>(tree) = {
-		glm::vec3(10, 0, 0),
-		glm::quat(),
-		glm::vec3(1, 1, 1)
-	};
-	kult::add<Component::Render>(tree) = {
-		meshManager.Get("tree.obj"),
-		textureManager.Get("missing.raw"),
-		false
-	};
-	kult::add<Component::Physics>(tree) = {
-		glm::vec3(0, 0, 0),
-		glm::zero<glm::vec3>(),
-		glm::vec3(0, 0, 1)
-	};
+	auto pl = particleManager.Get("2.bin")->GetParticles();
+
+	for (auto i: *pl)
+	{
+		kult::entity e;
+
+		kult::add<Component::Position>(e) = {
+			i * 10.0f,
+			glm::quat(),
+			glm::vec3(1, 1, 1) * 0.01f
+		};
+		kult::add<Component::Render>(e) = {
+			meshManager.Get("cube.obj"),
+			textureManager.Get("wood.raw"),
+			false
+		};
+	}
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
