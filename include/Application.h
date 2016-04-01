@@ -22,8 +22,6 @@ private:
 	AssetManager::AssetManager<AssetManager::Config> configManager;
 	AssetManager::AssetManager<AssetManager::ParticleList> particleManager;
 
-	AssetManager::Shader* shader;
-
 	kult::entity camera;
 	kult::entity cube;
 	kult::entity particleCloud;

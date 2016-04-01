@@ -14,8 +14,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	shaderManager("data/shaders/"),
 	textureManager("data/textures/"),
 	configManager("data/config/"),
-	particleManager("data/particleSets/"),
-	shader(shaderManager.Get("default.shader"))
+	particleManager("data/particleSets/")
 {
 	//Camera entity
 	kult::add<Component::Position>(camera) = {
@@ -33,19 +32,20 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::Position>(cube) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
-		glm::vec3(30, 30, 0.01)
+		glm::vec3(10, 10, .01)
 	};
 	kult::add<Component::Render>(cube) = {
 		meshManager.Get("cube.obj"),
-		textureManager.Get("wood.raw"),
+		textureManager.Get("white.raw"),
 		true
 	};
 
 	//Particle cloud
 	kult::add<Component::Position>(particleCloud) = {
-		glm::vec3(0, 0, 10),
+		glm::vec3(0, 0, 0),
 		glm::quat(),
-		glm::vec3(10, 10, 10) };
+		glm::vec3(10, 10, 10)
+	};
 	kult::add<Component::PointRender>(particleCloud) =
 	{
 		particleManager.Get("1.bin")
@@ -85,8 +85,13 @@ void Application::Update(float deltaTime)
 
 void Application::Render()
 {
+	glm::f32 fov = configManager.Get("camera/fFov")->Get<glm::f32>();
+	glm::f32 near = configManager.Get("camera/fNear")->Get<glm::f32>();
+	glm::f32 far = configManager.Get("camera/fFar")->Get<glm::f32>();
+	glm::uvec2 screenSize = GetScreenSize();
+
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	Systems::Render(shader, camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
-	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, GetScreenSize(), 59.0f, 0.1f, 1000.0f);
+	Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
+	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
 }
