@@ -69,18 +69,18 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	{
 		particles.push_back({ vertices->at(i).position, 2.0f, 0.0f });
 	}
+	vertexGridParticles = new AssetManager::ParticleList(&particles);
 
-	kult::add<Component::Position>(vertexParticles) = {
+
+	kult::add<Component::Position>(vertexParticlesEntity) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
 		glm::vec3(10, 10, 10)
 	};
-	kult::add<Component::PointRender>(vertexParticles) =
+	kult::add<Component::PointRender>(vertexParticlesEntity) =
 	{
-		new AssetManager::ParticleList(&particles)
+		vertexGridParticles
 	};
-
-	//SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 Application::~Application()
 {
@@ -88,6 +88,8 @@ Application::~Application()
 	camera.purge();
 	cube.purge();
 	particleCloud.purge();
+	vertexParticlesEntity.purge();
+	delete vertexGridParticles;
 }
 
 void Application::HandleEvent(SDL_Event& event)

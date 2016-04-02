@@ -32,9 +32,10 @@ private:
 	kult::entity camera;
 	kult::entity cube;
 	kult::entity particleCloud;
-	kult::entity vertexParticles;
+	kult::entity vertexParticlesEntity;
 
 	VertexGrid vertexGrid;
+	AssetManager::ParticleList* vertexGridParticles;
 
 	//GUI varaiables
 	bool showGui;
