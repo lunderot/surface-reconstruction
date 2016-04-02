@@ -70,7 +70,7 @@ namespace AssetManager
 			{
 				min.z = vertex.z;
 			}
-			particles.push_back({ vertex, 0.038f }); //TODO: This value shouldn't be hardcoded to 0.038f
+			particles.push_back({ vertex, 2.0f, 1.0 }); //TODO: This value shouldn't be hardcoded to 0.038f
 		}
 
 		//Generate vertex buffer and vertex array object

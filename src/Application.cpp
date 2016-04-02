@@ -56,14 +56,14 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
 
-	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), particleList->GetParticles()->at(0).radius);
+	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.038f);
 
 	std::vector<AssetManager::ParticleList::Particle> particles;
 	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
 
 	for (int i = 0; i < vertices->size(); i++)
 	{
-		particles.push_back({ vertices->at(i).position, 0.038f});
+		particles.push_back({ vertices->at(i).position, 2.0f, 0.0f });
 	}
 
 	kult::add<Component::Position>(vertexParticles) = {

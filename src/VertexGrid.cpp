@@ -18,11 +18,10 @@ VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 gran
 		{
 			for (int z = 0; z < gridSize.z; z++)
 			{
-				vertices[x * (gridSize.y - 1) + y * (gridSize.z - 1) + z].position = lowerBound + granularity * glm::vec3(x,y,z);
+				vertices[x * gridSize.y * gridSize.z + y * gridSize.z + z].position = lowerBound + granularity * glm::vec3(x,y,z);
 			}
 		}
 	}
-
 }
 
 VertexGrid::~VertexGrid()
