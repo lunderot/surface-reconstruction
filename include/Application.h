@@ -30,7 +30,6 @@ private:
 
 	//Entities
 	kult::entity camera;
-	kult::entity cube;
 	kult::entity particleCloud;
 	kult::entity vertexParticlesEntity;
 

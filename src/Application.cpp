@@ -26,26 +26,15 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 	//Camera entity
 	kult::add<Component::Position>(camera) = {
-		glm::vec3(0, 0, 2)
+		configManager.Get("camera/vPosition")->Get<glm::vec3>()
 	};
+
 	kult::add<Component::Freelook>(camera) = {
 		configManager.Get("camera/fSensitivity")->Get<glm::f32>()
 	};
 	kult::add<Component::Physics>(camera);
 	kult::add<Component::Freemove>(camera) = {
 		configManager.Get("camera/fSpeed")->Get<glm::f32>()
-	};
-
-	//Floor with wood texture
-	kult::add<Component::Position>(cube) = {
-		glm::vec3(0, 0, 0),
-		glm::quat(),
-		glm::vec3(10, 10, .01)
-	};
-	kult::add<Component::Render>(cube) = {
-		meshManager.Get("cube.obj"),
-		textureManager.Get("white.raw"),
-		true
 	};
 
 	//Particle cloud
@@ -57,9 +46,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::PointRender>(particleCloud) =
 	{
 		true,
-		particleManager.Get("2.bin")
+		particleManager.Get("1.bin")
 	};
-	AssetManager::ParticleList* particleList = particleManager.Get("2.bin");
+	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
 
 	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.04f, 0.038f);
 	for (auto& particle : *particleList->GetParticles())
@@ -91,7 +80,6 @@ Application::~Application()
 {
 	ImGui_ImplSdlGL3_Shutdown();
 	camera.purge();
-	cube.purge();
 	particleCloud.purge();
 	vertexParticlesEntity.purge();
 	delete vertexGridParticles;

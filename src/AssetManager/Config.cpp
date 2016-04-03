@@ -15,21 +15,35 @@ namespace AssetManager
 
 	void Config::Load(std::istream* buffer, const std::string& filename)
 	{
-		std::string str((std::istreambuf_iterator<char>(*buffer)), std::istreambuf_iterator<char>());
+		
 		switch (filename[0])
 		{
 		case 'i':
-			integerValue = std::stoi(str);
+		{
+			*buffer >> integerValue;
+		}
 			break;
 		case 's':
+		{
+			std::string str((std::istreambuf_iterator<char>(*buffer)), std::istreambuf_iterator<char>());
 			std::memset(data, '\0', 64);
 			std::memcpy(data, str.data(), 64);
+		}
 			break;
 		case 'f':
-			floatValue = std::stof(str);
+		{
+			*buffer >> floatValue;
+		}
+			break;
+		case 'v':
+		{
+			*buffer >> vectorValue.x >> vectorValue.y >> vectorValue.z;
+		}
 			break;
 		default:
+		{
 			throw std::runtime_error("Invalid config variable type");
+		}
 			break;
 		}
 	}

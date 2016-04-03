@@ -2,6 +2,7 @@
 
 #include <string>
 #include <istream>
+#include <glm/glm.hpp>
 
 namespace AssetManager
 {
@@ -13,6 +14,7 @@ namespace AssetManager
 			char data[64];
 			float floatValue;
 			int integerValue;
+			glm::vec3 vectorValue;
 		};
 	public:
 		Config(std::istream* buffer, const std::string& filename);
@@ -42,7 +44,11 @@ namespace AssetManager
 			return integerValue;
 		}
 
-		
+		template<>
+		glm::vec3 Get<glm::vec3>()
+		{
+			return vectorValue;
+		}
 
 		void Load(std::istream* buffer, const std::string& filename);
 	};
