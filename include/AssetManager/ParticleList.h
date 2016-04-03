@@ -36,7 +36,7 @@ namespace AssetManager
 
 		void Load(std::istream* buffer, const std::string& filename);
 
-		const std::vector<Particle>* GetParticles() const;
+		std::vector<Particle>* GetParticles();
 
 		glm::vec3 GetMin() const;
 		glm::vec3 GetMax() const;

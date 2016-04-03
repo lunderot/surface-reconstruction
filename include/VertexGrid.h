@@ -14,16 +14,17 @@ public:
 	};
 
 private:
+	glm::f32 vertexBoundingBoxSize;
 	glm::vec3 lowerBound;
 	glm::vec3 upperBound;
-	glm::f32 vertexBoundingBoxSize;
+	glm::f32 particleRadius;
+	glm::f32 granularity;
 	glm::ivec3 gridSize;
-
 	std::vector<Vertex> vertices;
 
 public:
 	VertexGrid();
-	VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 vertexBoundingBoxSize);
+	VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 vertexBoundingBoxSize, glm::f32 particleRadius);
 	~VertexGrid();
 	void CalculateScalarValues();
 	void AddParticleToGrid(AssetManager::ParticleList::Particle*);

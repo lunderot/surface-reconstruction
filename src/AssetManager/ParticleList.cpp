@@ -82,7 +82,7 @@ namespace AssetManager
 		vertexCount = particles.size();
 	}
 
-	const std::vector<ParticleList::Particle>* ParticleList::GetParticles() const
+	std::vector<ParticleList::Particle>* ParticleList::GetParticles()
 	{
 		return &particles;
 	}

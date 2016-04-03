@@ -3,11 +3,19 @@
 VertexGrid::VertexGrid()
 {}
 
-VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity)
+VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity, glm::f32 particleRadius)
 {
+	this->particleRadius = particleRadius;
+	this->granularity = granularity;
+	this->upperBound = upperBound;
+	this->lowerBound = lowerBound;
+
+	//should not be hardcoded
+	vertexBoundingBoxSize = 4.0f * particleRadius;
+
 	glm::vec3 boundingBoxSize = glm::abs(upperBound - lowerBound);
 	gridSize = glm::ivec3(boundingBoxSize / granularity);
-	gridSize += 2; //Offset to avoid losing particles at the upper edges.
+	gridSize += 1; //Offset to avoid losing particles at the upper edges.
 
 	vertices.resize(gridSize.x * gridSize.y * gridSize.z);
 	
@@ -35,9 +43,25 @@ void VertexGrid::CalculateScalarValues()
 
 }
 
-void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle*)
+void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle* particle)
 {
+	glm::vec3 localMin = particle->position - vertexBoundingBoxSize * 0.5f;
+	glm::vec3 localMax = particle->position + vertexBoundingBoxSize * 0.5f;
 
+	glm::ivec3 gridPosMin = glm::ceil(glm::max((localMin - lowerBound) / granularity, 0.0f));
+	glm::ivec3 gridPosMax = glm::floor(glm::min((localMax - lowerBound) / granularity, glm::vec3(gridSize)));
+
+	for (int x = gridPosMin.x; x <= gridPosMax.x; x++)
+	{
+		for (int y = gridPosMin.y; y <= gridPosMax.y; y++)
+		{
+			for (int z = gridPosMin.z; z <= gridPosMax.z; z++)
+			{
+				int vertexVectorPos = x * (gridSize.y - 1) * (gridSize.z - 1) + y * (gridSize.z - 1) + z;
+				vertices.at(vertexVectorPos).particles.push_back(particle);
+			}
+		}
+	}
 }
 
 std::vector<VertexGrid::Vertex>* VertexGrid::GetVertices()

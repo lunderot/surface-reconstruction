@@ -57,11 +57,15 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::PointRender>(particleCloud) =
 	{
 		true,
-		particleManager.Get("1.bin")
+		particleManager.Get("2.bin")
 	};
-	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
+	AssetManager::ParticleList* particleList = particleManager.Get("2.bin");
 
-	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.038f);
+	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.04f, 0.038f);
+	for (auto& particle : *particleList->GetParticles())
+	{
+		vertexGrid.AddParticleToGrid(&particle);
+	}
 
 	std::vector<AssetManager::ParticleList::Particle> particles;
 	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
