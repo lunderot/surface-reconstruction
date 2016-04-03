@@ -66,9 +66,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	std::vector<AssetManager::ParticleList::Particle> particles;
 	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
 
-	for (int i = 0; i < vertices->size(); i++)
+	for (auto i: *vertices)
 	{
-		particles.push_back({ vertices->at(i).position, glm::f32(2.0f), glm::f32(0.1f) });
+		particles.push_back({ i.position, glm::f32(2.0f), glm::f32(0.1f) });
 	}
 	vertexGridParticles = new AssetManager::ParticleList(&particles);
 
