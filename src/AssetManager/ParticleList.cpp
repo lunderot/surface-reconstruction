@@ -11,27 +11,7 @@ namespace AssetManager
 	ParticleList::ParticleList(std::vector<Particle>* particles)
 	{
 		this->particles = std::vector<Particle>(particles->begin(), particles->end());
-
-		//Generate vertex buffer and vertex array object
-		glGenBuffers(1, &vbo);
-		glGenVertexArrays(1, &vao);
-
-		//Bind the buffers
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-		//Load the vertex buffer
-		glBufferData(GL_ARRAY_BUFFER, this->particles.size() * sizeof(Particle), this->particles.data(), GL_STATIC_DRAW);
-
-		//Enable the shader attributes
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)));
-		glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-
-		glBindVertexArray(0);
-		vertexCount = this->particles.size();
+		GenerateBuffers();
 	}
 
 	ParticleList::~ParticleList()
@@ -70,9 +50,14 @@ namespace AssetManager
 			{
 				min.z = vertex.z;
 			}
-			particles.push_back({ vertex, 2.0f, 1.0 }); //TODO: This value shouldn't be hardcoded to 0.038f
+			particles.push_back({ vertex, 2.0f, 1.0f }); //TODO: This value shouldn't be hardcoded to 0.038f
 		}
 
+		GenerateBuffers();
+	}
+
+	void ParticleList::GenerateBuffers()
+	{
 		//Generate vertex buffer and vertex array object
 		glGenBuffers(1, &vbo);
 		glGenVertexArrays(1, &vao);

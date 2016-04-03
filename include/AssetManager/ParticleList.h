@@ -26,6 +26,9 @@ namespace AssetManager
 		std::vector<Particle> particles;
 		glm::vec3 min;
 		glm::vec3 max;
+
+		void GenerateBuffers();
+
 	public:
 		ParticleList(std::vector<Particle>* particles);
 		ParticleList(std::istream* buffer, const std::string& filename);

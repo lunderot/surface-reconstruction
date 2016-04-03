@@ -68,7 +68,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 
 	for (int i = 0; i < vertices->size(); i++)
 	{
-		particles.push_back({ vertices->at(i).position, 2.0f, 0.0f });
+		particles.push_back({ vertices->at(i).position, glm::f32(2.0f), glm::f32(0.1f) });
 	}
 	vertexGridParticles = new AssetManager::ParticleList(&particles);
 
@@ -133,7 +133,7 @@ void Application::Render()
 
 	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
+	//Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
 	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
 
 	RenderGUI();
