@@ -107,6 +107,7 @@
     <ClInclude Include="include\components\Physics.h" />
     <ClInclude Include="include\AssetManager\Mesh.h" />
     <ClInclude Include="include\AssetManager\Shader.h" />
+    <ClInclude Include="include\imgui_impl_sdl_gl3.h" />
     <ClInclude Include="include\System.h" />
     <ClInclude Include="include\systems\Freelook.h" />
     <ClInclude Include="include\systems\Freemove.h" />
@@ -115,7 +116,6 @@
     <ClInclude Include="include\systems\Render.h" />
     <ClInclude Include="include\AssetManager\Texture.h" />
     <ClInclude Include="include\VertexGrid.h" />
-    <ClInclude Include="src\imgui_impl_sdl_gl3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

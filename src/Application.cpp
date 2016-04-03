@@ -56,6 +56,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	};
 	kult::add<Component::PointRender>(particleCloud) =
 	{
+		true,
 		particleManager.Get("1.bin")
 	};
 	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
@@ -71,7 +72,6 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	}
 	vertexGridParticles = new AssetManager::ParticleList(&particles);
 
-
 	kult::add<Component::Position>(vertexParticlesEntity) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
@@ -79,6 +79,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	};
 	kult::add<Component::PointRender>(vertexParticlesEntity) =
 	{
+		true,
 		vertexGridParticles
 	};
 }
@@ -147,6 +148,8 @@ void Application::RenderGUI()
 		ImGui::SetNextWindowPos(ImVec2(10, 50));
 		ImGui::Begin("Settings", &showGui, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
 			ImGui::ColorEdit3("clear color", glm::value_ptr(clearColor));
+			ImGui::Checkbox("Particle cloud:", &kult::get<Component::PointRender>(particleCloud).renderThis);
+			ImGui::Checkbox("Vertex grid particles:", &kult::get<Component::PointRender>(vertexParticlesEntity).renderThis);
 		ImGui::End();
 	}
 

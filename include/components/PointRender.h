@@ -7,6 +7,7 @@ namespace Component
 {
 	struct PointRenderData
 	{
+		bool renderThis;
 		AssetManager::ParticleList* mesh;
 		template<typename T> friend T&operator<<(T &os, const PointRenderData &self) {
 			return os << "pren", os;

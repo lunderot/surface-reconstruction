@@ -25,18 +25,21 @@ namespace Systems
 
 		for (auto &id : join<Component::Position, Component::PointRender>()) {
 			auto& renderData = get<Component::PointRender>(id);
-			auto& positionData = get<Component::Position>(id);
+			if (renderData.renderThis)
+			{
+				auto& positionData = get<Component::Position>(id);
 
-			glm::mat4 model;
-			model = glm::translate(model, positionData.pos);
-			model *= glm::mat4_cast(positionData.rot);
-			model = glm::scale(model, positionData.scale);
+				glm::mat4 model;
+				model = glm::translate(model, positionData.pos);
+				model *= glm::mat4_cast(positionData.rot);
+				model = glm::scale(model, positionData.scale);
 
-			shader->SetUniform("model", model);
-			shader->SetUniform("scale", positionData.scale);
+				shader->SetUniform("model", model);
+				shader->SetUniform("scale", positionData.scale);
 
-			glBindVertexArray(renderData.mesh->GetVAO());
-			glDrawArrays(GL_POINTS, 0, renderData.mesh->GetVertexCount());
+				glBindVertexArray(renderData.mesh->GetVAO());
+				glDrawArrays(GL_POINTS, 0, renderData.mesh->GetVertexCount());
+			}
 		}
 	}
 }
