@@ -70,9 +70,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	std::vector<AssetManager::ParticleList::Particle> particles;
 	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
 
-	for (int i = 0; i < vertices->size(); i++)
+	for (auto i: *vertices)
 	{
-		particles.push_back({ vertices->at(i).position, glm::f32(2.0f), glm::f32(0.1f) });
+		particles.push_back({ i.position, glm::f32(2.0f), glm::f32(0.1f) });
 	}
 	vertexGridParticles = new AssetManager::ParticleList(&particles);
 
@@ -151,9 +151,15 @@ void Application::RenderGUI()
 		ImGui::SetNextWindowSize(ImVec2(400, 660));
 		ImGui::SetNextWindowPos(ImVec2(10, 50));
 		ImGui::Begin("Settings", &showGui, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings);
-			ImGui::ColorEdit3("clear color", glm::value_ptr(clearColor));
-			ImGui::Checkbox("Particle cloud:", &kult::get<Component::PointRender>(particleCloud).renderThis);
-			ImGui::Checkbox("Vertex grid particles:", &kult::get<Component::PointRender>(vertexParticlesEntity).renderThis);
+			ImGui::ColorEdit3("Clear color", glm::value_ptr(clearColor));
+			ImGui::Checkbox("Show FPS", &showInfoBox);
+			ImGui::Separator();
+			ImGui::Checkbox("Particle cloud", &kult::get<Component::PointRender>(particleCloud).renderThis);
+			ImGui::Checkbox("Vertex grid particles", &kult::get<Component::PointRender>(vertexParticlesEntity).renderThis);
+			if (ImGui::Button("Reset camera position"))
+			{
+				kult::get<Component::Position>(camera).pos = glm::vec3(0, 0, 0);
+			}
 		ImGui::End();
 	}
 
