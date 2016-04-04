@@ -156,7 +156,7 @@ void Application::Render()
 
 	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	Systems::DebugRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near
+	Systems::DebugRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
 	if (showVertexRelation)
 	{
 		Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
@@ -176,7 +176,7 @@ void Application::RenderGUI()
 			ImGui::ColorEdit3("Clear color", glm::value_ptr(clearColor));
 			ImGui::Checkbox("Show FPS", &showInfoBox);
 			ImGui::Separator();
-			ImGui::Checkbox("Particle cloud", &kult::get<Comp23onent::DebugRender>(particleCloud).renderThis);
+			ImGui::Checkbox("Particle cloud", &kult::get<Component::DebugRender>(particleCloud).renderThis);
 			ImGui::Checkbox("Vertex grid particles", &kult::get<Component::DebugRender>(vertexParticlesEntity).renderThis);
 			if (ImGui::Button("Reset camera position"))
 			{
