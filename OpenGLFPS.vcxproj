@@ -90,7 +90,7 @@
     <ClCompile Include="src\systems\Freelook.cpp" />
     <ClCompile Include="src\systems\Freemove.cpp" />
     <ClCompile Include="src\systems\Physics.cpp" />
-    <ClCompile Include="src\systems\PointRender.cpp" />
+    <ClCompile Include="src\systems\DebugRender.cpp" />
     <ClCompile Include="src\systems\Render.cpp" />
     <ClCompile Include="src\AssetManager\Texture.cpp" />
     <ClCompile Include="src\VertexGrid.cpp" />
@@ -103,7 +103,7 @@
     <ClInclude Include="include\AssetManager\Config.h" />
     <ClInclude Include="include\components\Freelook.h" />
     <ClInclude Include="include\components\Freemove.h" />
-    <ClInclude Include="include\components\PointRender.h" />
+    <ClInclude Include="include\components\DebugRender.h" />
     <ClInclude Include="include\components\Position.h" />
     <ClInclude Include="include\components\Render.h" />
     <ClInclude Include="include\components\Physics.h" />
@@ -114,7 +114,7 @@
     <ClInclude Include="include\systems\Freelook.h" />
     <ClInclude Include="include\systems\Freemove.h" />
     <ClInclude Include="include\systems\Physics.h" />
-    <ClInclude Include="include\systems\PointRender.h" />
+    <ClInclude Include="include\systems\DebugRender.h" />
     <ClInclude Include="include\systems\Render.h" />
     <ClInclude Include="include\AssetManager\Texture.h" />
     <ClInclude Include="include\VertexGrid.h" />

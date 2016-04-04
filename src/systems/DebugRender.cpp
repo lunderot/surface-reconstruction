@@ -1,4 +1,4 @@
-#include "systems/PointRender.h"
+#include "systems/DebugRender.h"
 
 #include "components/Freelook.h"
 
@@ -10,7 +10,7 @@ namespace Systems
 {
 	using namespace kult;
 
-	void PointRender(AssetManager::Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far)
+	void DebugRender(AssetManager::Shader* shader, kult::entity camera, glm::ivec2 screenSize, glm::f32 fov, glm::f32 near, glm::f32 far)
 	{
 		auto& cameraPositionData = get<Component::Position>(camera);
 		auto& cameraData = get<Component::Freelook>(camera);
@@ -23,8 +23,8 @@ namespace Systems
 		shader->Use();
 		shader->SetUniform("projview", projection * view);
 
-		for (auto &id : join<Component::Position, Component::PointRender>()) {
-			auto& renderData = get<Component::PointRender>(id);
+		for (auto &id : join<Component::Position, Component::DebugRender>()) {
+			auto& renderData = get<Component::DebugRender>(id);
 			if (renderData.renderThis)
 			{
 				auto& positionData = get<Component::Position>(id);
@@ -38,7 +38,12 @@ namespace Systems
 				shader->SetUniform("scale", positionData.scale);
 
 				glBindVertexArray(renderData.mesh->GetVAO());
-				glDrawArrays(GL_POINTS, 0, renderData.mesh->GetVertexCount());
+				GLenum renderMode = GL_POINTS;
+				if (renderData.renderLines)
+				{
+					renderMode = GL_LINES;
+				}
+				glDrawArrays(renderMode, 0, renderData.mesh->GetVertexCount());
 			}
 		}
 	}
