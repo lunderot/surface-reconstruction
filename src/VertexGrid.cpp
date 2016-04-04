@@ -57,8 +57,7 @@ void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle* particl
 		{
 			for (int z = gridPosMin.z; z <= gridPosMax.z; z++)
 			{
-				int vertexVectorPos = x * (gridSize.y - 1) * (gridSize.z - 1) + y * (gridSize.z - 1) + z;
-				vertices.at(vertexVectorPos).particles.push_back(particle);
+				GetVertex({x,y,z})->particles.push_back(particle);
 			}
 		}
 	}
@@ -67,4 +66,15 @@ void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle* particl
 std::vector<VertexGrid::Vertex>* VertexGrid::GetVertices()
 {
 	return &vertices;
+}
+
+glm::uvec3 VertexGrid::GetGridSize() const
+{
+	return gridSize;
+}
+
+VertexGrid::Vertex* VertexGrid::GetVertex(glm::ivec3 position)
+{
+	//return &vertices[position.x * (gridSize.y - 1) * (gridSize.z - 1) + position.y * (gridSize.z - 1) + position.z];
+	return &vertices[position.x + (gridSize.y - 1) * (position.y + (gridSize.x - 1) * position.z)];
 }

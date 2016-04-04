@@ -17,12 +17,27 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	particleManager("data/particleSets/"),
 	showGui(false),
 	showInfoBox(true),
+	showVertexRelation(false),
 	clearColor(0.2f, 0.2f, 0.2f)
 {
 
 	ImGui_ImplSdlGL3_Init(window);
 	//Set the window alpha
 	ImGui::GetStyle().WindowFillAlphaDefault = 0.9f;
+
+	kult::add<Component::Position>(cubeEntity) = {
+		glm::vec3(0, 0, 0),
+		glm::quat(),
+		glm::vec3(1,1,1)
+	};
+
+	kult::add<Component::Render>(cubeEntity) = {
+		meshManager.Get("cube.obj"),
+		nullptr,
+		false,
+		false,
+		glm::vec3(0, 1, 0)
+	};
 
 	//Camera entity
 	kult::add<Component::Position>(camera) = {
@@ -41,7 +56,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::Position>(particleCloud) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
-		glm::vec3(10, 10, 10)
+		glm::vec3(1, 1, 1)
 	};
 	kult::add<Component::PointRender>(particleCloud) =
 	{
@@ -68,7 +83,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::Position>(vertexParticlesEntity) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
-		glm::vec3(10, 10, 10)
+		glm::vec3(1, 1, 1)
 	};
 	kult::add<Component::PointRender>(vertexParticlesEntity) =
 	{
@@ -125,7 +140,10 @@ void Application::Render()
 
 	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
+	if (showVertexRelation)
+	{
+		Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
+	}
 	Systems::PointRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
 
 	RenderGUI();
@@ -148,7 +166,28 @@ void Application::RenderGUI()
 			{
 				kult::get<Component::Position>(camera).pos = glm::vec3(0, 0, 0);
 			}
+			ImGui::Checkbox("Draw vertex relation", &showVertexRelation);
+			if (showVertexRelation)
+			{
+				glm::uvec3 gs = vertexGrid.GetGridSize();
+				glm::f32 sensitivity = 0.1f; //TODO: This should be config value
+				
+				VertexGrid::Vertex* vertex = vertexGrid.GetVertex(selectedVertex);
+				
+				bool changed = false;
+
+				changed = ImGui::DragInt("X", &selectedVertex.x, sensitivity, 0, gs.x);
+				changed = ImGui::DragInt("Y", &selectedVertex.y, sensitivity, 0, gs.y) || changed;
+				changed = ImGui::DragInt("Z", &selectedVertex.z, sensitivity, 0, gs.z) || changed;
+				if (changed)
+				{
+					kult::get<Component::Position>(cubeEntity).pos = vertex->position;
+				}
+			}
+
 		ImGui::End();
+
+		ImGui::ShowTestWindow();
 	}
 
 	if (showInfoBox)

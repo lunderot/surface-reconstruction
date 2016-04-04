@@ -19,7 +19,7 @@ private:
 	glm::vec3 upperBound;
 	glm::f32 particleRadius;
 	glm::f32 granularity;
-	glm::ivec3 gridSize;
+	glm::uvec3 gridSize;
 	std::vector<Vertex> vertices;
 
 public:
@@ -29,4 +29,6 @@ public:
 	void CalculateScalarValues();
 	void AddParticleToGrid(AssetManager::ParticleList::Particle*);
 	std::vector<Vertex>* GetVertices();
+	glm::uvec3 GetGridSize() const;
+	Vertex* GetVertex(glm::ivec3 position);
 };
