@@ -5,14 +5,15 @@
 
 namespace Component
 {
-	struct PointRenderData
+	struct DebugRenderData
 	{
 		bool renderThis;
+		bool renderLines;
 		AssetManager::ParticleList* mesh;
-		template<typename T> friend T&operator<<(T &os, const PointRenderData &self) {
+		template<typename T> friend T&operator<<(T &os, const DebugRenderData &self) {
 			return os << "pren", os;
 		}
 	};
 
-	using PointRender = kult::component<'pren', PointRenderData>;
+	using DebugRender = kult::component<'pren', DebugRenderData>;
 }
