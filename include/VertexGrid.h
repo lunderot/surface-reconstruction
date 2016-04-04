@@ -30,5 +30,6 @@ public:
 	void AddParticleToGrid(AssetManager::ParticleList::Particle*);
 	std::vector<Vertex>* GetVertices();
 	glm::uvec3 GetGridSize() const;
-	Vertex* GetVertex(glm::ivec3 position);
+	Vertex* GetVertex(glm::ivec3 gridPos);
+	glm::vec3 GridPosToWorldPos(glm::ivec3 gridPos);
 };

@@ -15,19 +15,17 @@ VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 gran
 
 	glm::vec3 boundingBoxSize = glm::abs(upperBound - lowerBound);
 	gridSize = glm::ivec3(boundingBoxSize / granularity);
-	gridSize += 1; //Offset to avoid losing particles at the upper edges.
+	gridSize += 2; //Offset to avoid losing particles at the upper edges.		
 
 	vertices.resize(gridSize.x * gridSize.y * gridSize.z);
 	
-	int it = 0;
-
-	for (int x = 0; x < gridSize.x; x++)
+	for (int z = 0; z < gridSize.z; z++)
 	{
 		for (int y = 0; y < gridSize.y; y++)
 		{
-			for (int z = 0; z < gridSize.z; z++)
+			for (int x = 0; x < gridSize.x; x++)
 			{
-				vertices.at(it++).position = lowerBound + granularity * glm::vec3(x, y, z);
+				GetVertex({x,y,z})->position = GridPosToWorldPos({x,y,z});
 			}
 		}
 	}
@@ -51,11 +49,11 @@ void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle* particl
 	glm::ivec3 gridPosMin = glm::ceil(glm::max((localMin - lowerBound) / granularity, 0.0f));
 	glm::ivec3 gridPosMax = glm::floor(glm::min((localMax - lowerBound) / granularity, glm::vec3(gridSize)));
 
-	for (int x = gridPosMin.x; x <= gridPosMax.x; x++)
+	for (int x = gridPosMin.x; x < gridPosMax.x; x++)
 	{
-		for (int y = gridPosMin.y; y <= gridPosMax.y; y++)
+		for (int y = gridPosMin.y; y < gridPosMax.y; y++)
 		{
-			for (int z = gridPosMin.z; z <= gridPosMax.z; z++)
+			for (int z = gridPosMin.z; z < gridPosMax.z; z++)
 			{
 				GetVertex({x,y,z})->particles.push_back(particle);
 			}
@@ -73,8 +71,12 @@ glm::uvec3 VertexGrid::GetGridSize() const
 	return gridSize;
 }
 
-VertexGrid::Vertex* VertexGrid::GetVertex(glm::ivec3 position)
+VertexGrid::Vertex* VertexGrid::GetVertex(glm::ivec3 gridPos)
 {
-	//return &vertices[position.x * (gridSize.y - 1) * (gridSize.z - 1) + position.y * (gridSize.z - 1) + position.z];
-	return &vertices[position.x + (gridSize.y - 1) * (position.y + (gridSize.x - 1) * position.z)];
+	return &vertices[gridPos.x + gridSize.x * (gridPos.y + gridSize.y * gridPos.z)];
+}
+
+glm::vec3 VertexGrid::GridPosToWorldPos(glm::ivec3 gridPos)
+{
+	return lowerBound + granularity * glm::vec3(gridPos);
 }
