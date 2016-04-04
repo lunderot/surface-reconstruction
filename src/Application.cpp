@@ -39,11 +39,12 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		configManager.Get("camera/fSpeed")->Get<glm::f32>()
 	};
 
-	CreateParticleCloud();
-	CreateVertexGrid();
+	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
+	CreateParticleCloud(particleList);
+	CreateVertexGrid(particleList);
 }
 
-void Application::CreateParticleCloud()
+void Application::CreateParticleCloud(AssetManager::ParticleList* particleList)
 {
 	kult::add<Component::Position>(particleCloud) = {
 		glm::vec3(0, 0, 0),
@@ -54,29 +55,36 @@ void Application::CreateParticleCloud()
 	{
 		true,
 		false,
-		particleManager.Get("1.bin"),
+		particleList,
 		glm::vec3(1, 0, 0)
 	};
 }
 
-void Application::CreateVertexGrid()
+void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 {
-	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
-
 	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.04f, 0.038f);
+	
+	//Adds particle references to the vertices
 	for (auto& particle : *particleList->GetParticles())
 	{
 		vertexGrid.AddParticleToGrid(&particle);
 	}
 
-	std::vector<AssetManager::ParticleList::Particle> particles;
+	//glm::vec3 pos = particleList->GetMin();
+	//glm::f32 radius = 0.038f;
+	//pos.x += radius * 2;
+	//vertexGrid.AddParticleToGrid(new AssetManager::ParticleList::Particle{ pos, 2.0f, 1.0f });
+
+	//Creates visible particles for each vertex in the grid
+	////
+	std::vector<AssetManager::ParticleList::Particle> vertexParticles;
 	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
 
 	for (auto i : *vertices)
 	{
-		particles.push_back({ i.position, glm::f32(2.0f), glm::f32(0.1f) });
+		vertexParticles.push_back({ i.position, glm::f32(2.0f), glm::f32(0.1f) });
 	}
-	vertexGridParticles = new AssetManager::ParticleList(&particles);
+	vertexGridParticles = new AssetManager::ParticleList(&vertexParticles);
 
 	kult::add<Component::Position>(vertexParticlesEntity) = {
 		glm::vec3(0, 0, 0),
@@ -85,12 +93,15 @@ void Application::CreateVertexGrid()
 	};
 	kult::add<Component::DebugRender>(vertexParticlesEntity) =
 	{
-		true,
+		false,
 		false,
 		vertexGridParticles,
 		glm::vec3(0, 0, 0)
 	};
+	////
 
+	//Creates an entity for showing lines between a vertex and it's related particles
+	////
 	VertexGrid::Vertex*  vertex = vertexGrid.GetVertex(selectedVertex);
 	vertexRelationLines = new AssetManager::ParticleList(vertex->position, &vertex->particles);
 
@@ -105,7 +116,10 @@ void Application::CreateVertexGrid()
 		vertexRelationLines,
 		glm::vec3(0, 0, 1)
 	};
+	////
 
+	//Creates an entity for showing a bounding box around a vertex
+	////
 	glm::f32 scale = vertexGrid.GetVertexBoundingBoxSize();
 	kult::add<Component::Position>(cubeEntity) = {
 		vertexGrid.GetVertex({0,0,0})->position,
@@ -118,9 +132,10 @@ void Application::CreateVertexGrid()
 		false,
 		false,
 		false,
-		false,
+		true,
 		glm::vec3(0, 1, 0)
 	};
+	////
 }
 
 Application::~Application()
@@ -205,6 +220,8 @@ void Application::RenderGUI()
 
 			if (showVertexRelation)
 			{
+				ImGui::Checkbox("Boundingbox wireframe", &kult::get<Component::Render>(cubeEntity).wireframe);
+
 				glm::uvec3 gs = vertexGrid.GetGridSize();
 				glm::f32 sensitivity = 0.1f; //TODO: This should be config value
 				

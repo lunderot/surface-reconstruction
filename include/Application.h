@@ -47,8 +47,8 @@ private:
 	glm::vec3 clearColor;
 
 private:
-	void CreateParticleCloud();
-	void CreateVertexGrid();
+	void CreateParticleCloud(AssetManager::ParticleList* particleList);
+	void CreateVertexGrid(AssetManager::ParticleList* particleList);
 	void RenderGUI();
 
 public:

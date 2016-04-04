@@ -15,7 +15,7 @@ VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 gran
 
 	glm::vec3 boundingBoxSize = glm::abs(upperBound - lowerBound);
 	gridSize = glm::ivec3(boundingBoxSize / granularity);
-	gridSize += 2; //Offset to avoid losing particles at the upper edges.		
+	gridSize += 2; //Offset to avoid losing particles at the upper edges.
 
 	vertices.resize(gridSize.x * gridSize.y * gridSize.z);
 	
@@ -43,17 +43,17 @@ void VertexGrid::CalculateScalarValues()
 
 void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle* particle)
 {
-	glm::vec3 localMin = particle->position - vertexBoundingBoxSize * 0.5f;
-	glm::vec3 localMax = particle->position + vertexBoundingBoxSize * 0.5f;
+	glm::vec3 localMin = particle->position - vertexBoundingBoxSize * 0.5f - lowerBound;
+	glm::vec3 localMax = particle->position + vertexBoundingBoxSize * 0.5f - lowerBound;
 
-	glm::ivec3 gridPosMin = glm::ceil(glm::max((localMin - lowerBound) / granularity, 0.0f));
-	glm::ivec3 gridPosMax = glm::floor(glm::min((localMax - lowerBound) / granularity, glm::vec3(gridSize)));
+	glm::ivec3 gridPosMin = glm::ceil(glm::max(localMin / granularity, 0.0f));
+	glm::ivec3 gridPosMax = glm::floor(glm::min(localMax / granularity, glm::vec3(gridSize) -1.0f));
 
-	for (int x = gridPosMin.x; x < gridPosMax.x; x++)
+	for (int x = gridPosMin.x; x <= gridPosMax.x; x++)
 	{
-		for (int y = gridPosMin.y; y < gridPosMax.y; y++)
+		for (int y = gridPosMin.y; y <= gridPosMax.y; y++)
 		{
-			for (int z = gridPosMin.z; z < gridPosMax.z; z++)
+			for (int z = gridPosMin.z; z <= gridPosMax.z; z++)
 			{
 				GetVertex({x,y,z})->particles.push_back(particle);
 			}
