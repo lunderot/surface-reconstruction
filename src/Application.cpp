@@ -26,20 +26,6 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	//Set the window alpha
 	ImGui::GetStyle().WindowFillAlphaDefault = 0.9f;
 
-	kult::add<Component::Position>(cubeEntity) = {
-		glm::vec3(0, 0, 0),
-		glm::quat(),
-		glm::vec3(1, 1, 1) * 0.1f
-	};
-
-	kult::add<Component::Render>(cubeEntity) = {
-		meshManager.Get("cube.obj"),
-		nullptr,
-		false,
-		false,
-		glm::vec3(0, 1, 0)
-	};
-
 	//Camera entity
 	kult::add<Component::Position>(camera) = {
 		configManager.Get("camera/vPosition")->Get<glm::vec3>()
@@ -110,6 +96,21 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		vertexRelationLines,
 		glm::vec3(0, 0, 1)
 	};	
+
+	glm::f32 scale = vertexGrid.GetVertexBoundingBoxSize();
+	kult::add<Component::Position>(cubeEntity) = {
+		vertexGrid.GetVertex({0,0,0})->position,
+		glm::quat(),
+		glm::vec3(scale, scale, scale)
+	};
+	kult::add<Component::Render>(cubeEntity) = {
+		meshManager.Get("cube.obj"),
+		nullptr,
+		false,
+		false,
+		glm::vec3(0, 1, 0)
+	};
+
 }
 Application::~Application()
 {
@@ -193,13 +194,11 @@ void Application::RenderGUI()
 				glm::uvec3 gs = vertexGrid.GetGridSize();
 				glm::f32 sensitivity = 0.1f; //TODO: This should be config value
 				
-				
-				
 				bool changed = false;
 
-				changed = ImGui::DragInt("X", &selectedVertex.x, sensitivity, 0, gs.x);
-				changed = ImGui::DragInt("Y", &selectedVertex.y, sensitivity, 0, gs.y) || changed;
-				changed = ImGui::DragInt("Z", &selectedVertex.z, sensitivity, 0, gs.z) || changed;
+				changed = ImGui::DragInt("X", &selectedVertex.x, sensitivity, 0, gs.x - 1);
+				changed = ImGui::DragInt("Y", &selectedVertex.y, sensitivity, 0, gs.y - 1) || changed;
+				changed = ImGui::DragInt("Z", &selectedVertex.z, sensitivity, 0, gs.z - 1) || changed;
 				if (changed)
 				{
 					VertexGrid::Vertex* vertex = vertexGrid.GetVertex(selectedVertex);

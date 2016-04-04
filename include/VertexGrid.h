@@ -32,4 +32,5 @@ public:
 	glm::uvec3 GetGridSize() const;
 	Vertex* GetVertex(glm::ivec3 gridPos);
 	glm::vec3 GridPosToWorldPos(glm::ivec3 gridPos);
+	glm::f32 GetVertexBoundingBoxSize() const;
 };

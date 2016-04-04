@@ -80,3 +80,8 @@ glm::vec3 VertexGrid::GridPosToWorldPos(glm::ivec3 gridPos)
 {
 	return lowerBound + granularity * glm::vec3(gridPos);
 }
+
+glm::f32 VertexGrid::GetVertexBoundingBoxSize() const
+{
+	return vertexBoundingBoxSize;
+}
