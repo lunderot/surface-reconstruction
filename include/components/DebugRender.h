@@ -7,7 +7,7 @@ namespace Component
 {
 	struct DebugRenderData
 	{
-		bool renderThis;
+		bool visible;
 		bool renderLines;
 		AssetManager::ParticleList* mesh;
 		glm::vec3 color;

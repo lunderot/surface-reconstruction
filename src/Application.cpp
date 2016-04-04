@@ -91,7 +91,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		glm::vec3(1, 1, 1)
 	};
 	kult::add<Component::DebugRender>(vertexRelationEntity) = {
-		true,
+		false,
 		true,
 		vertexRelationLines,
 		glm::vec3(0, 0, 1)
@@ -180,8 +180,8 @@ void Application::RenderGUI()
 			ImGui::ColorEdit3("Clear color", glm::value_ptr(clearColor));
 			ImGui::Checkbox("Show FPS", &showInfoBox);
 			ImGui::Separator();
-			ImGui::Checkbox("Particle cloud", &kult::get<Component::DebugRender>(particleCloud).renderThis);
-			ImGui::Checkbox("Vertex grid particles", &kult::get<Component::DebugRender>(vertexParticlesEntity).renderThis);
+			ImGui::Checkbox("Particle cloud", &kult::get<Component::DebugRender>(particleCloud).visible);
+			ImGui::Checkbox("Vertex grid particles", &kult::get<Component::DebugRender>(vertexParticlesEntity).visible);
 			if (ImGui::Button("Reset camera position"))
 			{
 				kult::get<Component::Position>(camera).pos = glm::vec3(0, 0, 0);
@@ -191,6 +191,7 @@ void Application::RenderGUI()
 			if (ImGui::Checkbox("Draw vertex relation", &showVertexRelation))
 			{
 				kult::get<Component::Render>(cubeEntity).visible = showVertexRelation;
+				kult::get<Component::DebugRender>(vertexRelationEntity).visible = showVertexRelation;
 			}
 
 			if (showVertexRelation)
@@ -212,6 +213,7 @@ void Application::RenderGUI()
 					auto& debugRenderData = kult::get<Component::DebugRender>(vertexRelationEntity);
 					delete debugRenderData.mesh;
 					debugRenderData.mesh = new AssetManager::ParticleList(vertex->position, &vertex->particles);
+					
 				}
 			}
 

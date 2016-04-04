@@ -25,7 +25,7 @@ namespace Systems
 
 		for (auto &id : join<Component::Position, Component::DebugRender>()) {
 			auto& renderData = get<Component::DebugRender>(id);
-			if (renderData.renderThis)
+			if (renderData.visible)
 			{
 				auto& positionData = get<Component::Position>(id);
 
