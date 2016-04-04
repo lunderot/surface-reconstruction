@@ -26,35 +26,38 @@ namespace Systems
 
 		for (auto &id : join<Component::Position, Component::Render>()) {
 			auto& renderData = get<Component::Render>(id);
-			auto& positionData = get<Component::Position>(id);
-
-			glm::mat4 model;
-			model = glm::translate(model, positionData.pos);
-			model *= glm::mat4_cast(positionData.rot);
-			model = glm::scale(model, positionData.scale);
-
-			shader->SetUniform("model", model);
-			shader->SetUniform("scale", positionData.scale);
-			shader->SetUniform("scaleuv", renderData.scaleUv);
-			shader->SetUniform("textured", renderData.textured);
-			shader->SetUniform("color", renderData.color);
-
-			if (renderData.textured && renderData.texture != nullptr)
+			if (renderData.visible)
 			{
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, renderData.texture->GetTexture());
-			}
-			else
-			{
-				glPolygonMode(GL_FRONT, GL_LINE);
-				glPolygonMode(GL_BACK, GL_LINE);
-			}
+				auto& positionData = get<Component::Position>(id);
 
-			glBindVertexArray(renderData.mesh->GetVAO());
-			glDrawArrays(GL_TRIANGLES, 0, renderData.mesh->GetVertexCount());
+				glm::mat4 model;
+				model = glm::translate(model, positionData.pos);
+				model *= glm::mat4_cast(positionData.rot);
+				model = glm::scale(model, positionData.scale);
 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glPolygonMode(GL_BACK, GL_FILL);
+				shader->SetUniform("model", model);
+				shader->SetUniform("scale", positionData.scale);
+				shader->SetUniform("scaleuv", renderData.scaleUv);
+				shader->SetUniform("textured", renderData.textured);
+				shader->SetUniform("color", renderData.color);
+
+				if (renderData.textured && renderData.texture != nullptr)
+				{
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, renderData.texture->GetTexture());
+				}
+				else if (renderData.wireframe)
+				{
+					glPolygonMode(GL_FRONT, GL_LINE);
+					glPolygonMode(GL_BACK, GL_LINE);
+				}
+
+				glBindVertexArray(renderData.mesh->GetVAO());
+				glDrawArrays(GL_TRIANGLES, 0, renderData.mesh->GetVertexCount());
+
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glPolygonMode(GL_BACK, GL_FILL);
+			}
 		}
 	}
 }

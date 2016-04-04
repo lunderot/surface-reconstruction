@@ -10,8 +10,10 @@ namespace Component
 	{
 		AssetManager::Mesh* mesh;
 		AssetManager::Texture* texture;
+		bool visible;
 		bool scaleUv;
 		bool textured;
+		bool wireframe;
 		glm::vec3 color;
 		template<typename T> friend T&operator<<(T &os, const RenderData &self) {
 			return os << "mesh", os;

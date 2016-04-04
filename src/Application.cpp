@@ -108,6 +108,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		nullptr,
 		false,
 		false,
+		false,
+		true,
 		glm::vec3(0, 1, 0)
 	};
 
@@ -162,10 +164,7 @@ void Application::Render()
 	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Systems::DebugRender(shaderManager.Get("pointRender.shader"), camera, screenSize, fov, near, far);
-	if (showVertexRelation)
-	{
-		Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
-	}
+	Systems::Render(shaderManager.Get("default.shader"), camera, screenSize, fov, near, far);
 
 	RenderGUI();
 }
@@ -187,8 +186,13 @@ void Application::RenderGUI()
 			{
 				kult::get<Component::Position>(camera).pos = glm::vec3(0, 0, 0);
 			}
+			ImGui::SliderFloat("Camera speed", &kult::get<Component::Freemove>(camera).speed, 0.01f, 10.0f);
 
-			ImGui::Checkbox("Draw vertex relation", &showVertexRelation);
+			if (ImGui::Checkbox("Draw vertex relation", &showVertexRelation))
+			{
+				kult::get<Component::Render>(cubeEntity).visible = showVertexRelation;
+			}
+
 			if (showVertexRelation)
 			{
 				glm::uvec3 gs = vertexGrid.GetGridSize();
@@ -205,7 +209,7 @@ void Application::RenderGUI()
 
 					kult::get<Component::Position>(cubeEntity).pos = vertex->position;
 
-					auto debugRenderData = kult::get<Component::DebugRender>(vertexRelationEntity);
+					auto& debugRenderData = kult::get<Component::DebugRender>(vertexRelationEntity);
 					delete debugRenderData.mesh;
 					debugRenderData.mesh = new AssetManager::ParticleList(vertex->position, &vertex->particles);
 				}
