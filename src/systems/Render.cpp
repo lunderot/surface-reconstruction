@@ -36,12 +36,25 @@ namespace Systems
 			shader->SetUniform("model", model);
 			shader->SetUniform("scale", positionData.scale);
 			shader->SetUniform("scaleuv", renderData.scaleUv);
+			shader->SetUniform("textured", renderData.textured);
+			shader->SetUniform("color", renderData.color);
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, renderData.texture->GetTexture());
-			
+			if (renderData.textured && renderData.texture != nullptr)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, renderData.texture->GetTexture());
+			}
+			else
+			{
+				glPolygonMode(GL_FRONT, GL_LINE);
+				glPolygonMode(GL_BACK, GL_LINE);
+			}
+
 			glBindVertexArray(renderData.mesh->GetVAO());
 			glDrawArrays(GL_TRIANGLES, 0, renderData.mesh->GetVertexCount());
+
+			glPolygonMode(GL_FRONT, GL_FILL);
+			glPolygonMode(GL_BACK, GL_FILL);
 		}
 	}
 }

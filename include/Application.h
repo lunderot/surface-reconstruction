@@ -33,6 +33,7 @@ private:
 	kult::entity particleCloud;
 	kult::entity vertexParticlesEntity;
 	kult::entity vertexRelationEntity;
+	kult::entity cubeEntity;
 
 	VertexGrid vertexGrid;
 	AssetManager::ParticleList* vertexGridParticles;
@@ -41,6 +42,8 @@ private:
 	//GUI varaiables
 	bool showGui;
 	bool showInfoBox;
+	bool showVertexRelation;
+	glm::ivec3 selectedVertex;
 	glm::vec3 clearColor;
 
 private:

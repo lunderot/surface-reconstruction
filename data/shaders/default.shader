@@ -32,6 +32,9 @@ VS>>>
 <<<FS
 	#version 330
 
+	uniform bool textured;
+	uniform vec3 color;
+
 	out vec4 fragment;
 
 	in vec2 uv_out;
@@ -41,6 +44,14 @@ VS>>>
 
 	void main()
 	{
-		fragment = texture(tex, uv_out);
+		if (textured)
+		{
+			fragment = texture(tex, uv_out);
+		}
+		else
+		{
+			fragment = vec4(color, 1.0f);
+		}
+		
 	}
 FS>>>

@@ -197,3 +197,6 @@ FakesAssemblies/
 *.opt
 
 *.vcxproj.filters
+OpenGLFPS.VC.db
+desktop.ini
+data/particleSets/Thumbs.db
