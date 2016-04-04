@@ -10,6 +10,7 @@ namespace Component
 		bool renderThis;
 		bool renderLines;
 		AssetManager::ParticleList* mesh;
+		glm::vec3 color;
 		template<typename T> friend T&operator<<(T &os, const DebugRenderData &self) {
 			return os << "pren", os;
 		}

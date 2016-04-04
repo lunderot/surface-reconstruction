@@ -30,6 +30,7 @@ namespace AssetManager
 		void GenerateBuffers();
 
 	public:
+		ParticleList(glm::vec3 centerPosition, std::vector<Particle*>* particles);
 		ParticleList(std::vector<Particle>* particles);
 		ParticleList(std::istream* buffer, const std::string& filename);
 		~ParticleList();

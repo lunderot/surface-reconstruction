@@ -18,7 +18,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	showGui(false),
 	showInfoBox(true),
 	showVertexRelation(false),
-	clearColor(0.2f, 0.2f, 0.2f)
+	clearColor(0.2f, 0.2f, 0.2f),
+	selectedVertex(0, 0, 0)
 {
 
 	ImGui_ImplSdlGL3_Init(window);
@@ -62,7 +63,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	{
 		true,
 		false,
-		particleManager.Get("1.bin")
+		particleManager.Get("1.bin"),
+		glm::vec3(1, 0, 0)
 	};
 	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
 
@@ -90,10 +92,13 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	{
 		true,
 		false,
-		vertexGridParticles
+		vertexGridParticles,
+		glm::vec3(0, 0, 0)
 	};
 
-	vertexRelationLines = new AssetManager::ParticleList(&particles);
+	VertexGrid::Vertex*  vertex = vertexGrid.GetVertex(selectedVertex);
+	vertexRelationLines = new AssetManager::ParticleList(vertex->position, &vertex->particles);
+
 	kult::add<Component::Position>(vertexRelationEntity) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
@@ -102,10 +107,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::DebugRender>(vertexRelationEntity) = {
 		true,
 		true,
-		vertexRelationLines
-	};
-
-
+		vertexRelationLines,
+		glm::vec3(0, 0, 1)
+	};	
 }
 Application::~Application()
 {
@@ -183,9 +187,6 @@ void Application::RenderGUI()
 				kult::get<Component::Position>(camera).pos = glm::vec3(0, 0, 0);
 			}
 
-			ImGui::Checkbox("Render lines", &kult::get<Component::DebugRender>(vertexParticlesEntity).renderLines);
-
-
 			ImGui::Checkbox("Draw vertex relation", &showVertexRelation);
 			if (showVertexRelation)
 			{
@@ -202,12 +203,14 @@ void Application::RenderGUI()
 				if (changed)
 				{
 					kult::get<Component::Position>(cubeEntity).pos = vertex->position;
+
+					auto debugRenderData = kult::get<Component::DebugRender>(vertexRelationEntity);
+					delete debugRenderData.mesh;
+					debugRenderData.mesh = new AssetManager::ParticleList(vertex->position, &vertex->particles);
 				}
 			}
 
 		ImGui::End();
-
-		ImGui::ShowTestWindow();
 	}
 
 	if (showInfoBox)

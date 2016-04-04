@@ -25,8 +25,10 @@ VS>>>
 	out vec4 fragment;
 	in float scalar_out;
 
+	uniform vec3 color;
+
 	void main()
 	{
-		fragment = vec4(scalar_out, 0, 0, 1);
+		fragment = vec4(color, 1);
 	}
 FS>>>

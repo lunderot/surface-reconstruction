@@ -8,6 +8,16 @@ namespace AssetManager
 		Load(buffer, filename);
 	}
 
+	ParticleList::ParticleList(glm::vec3 centerPosition, std::vector<Particle*>* particles)
+	{
+		for (auto i: *particles)
+		{
+			this->particles.push_back({ centerPosition, 1.0f, 1.0f });
+			this->particles.push_back(*i);
+		}
+		GenerateBuffers();
+	}
+
 	ParticleList::ParticleList(std::vector<Particle>* particles)
 	{
 		this->particles = std::vector<Particle>(particles->begin(), particles->end());
