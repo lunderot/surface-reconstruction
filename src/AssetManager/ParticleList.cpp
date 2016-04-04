@@ -22,6 +22,10 @@ namespace AssetManager
 
 	void ParticleList::Load(std::istream* buffer, const std::string& filename)
 	{
+		float fMax = std::numeric_limits<float>::max();
+		float fMin = std::numeric_limits<float>::min();
+		max = { fMin ,fMin ,fMin };
+		min = { fMax ,fMax ,fMax };
 		while (!buffer->eof())
 		{
 			glm::vec3 vertex;
