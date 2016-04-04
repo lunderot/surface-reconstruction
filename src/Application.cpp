@@ -29,7 +29,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	kult::add<Component::Position>(cubeEntity) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
-		glm::vec3(1,1,1)
+		glm::vec3(1, 1, 1) * 0.1f
 	};
 
 	kult::add<Component::Render>(cubeEntity) = {
@@ -193,7 +193,7 @@ void Application::RenderGUI()
 				glm::uvec3 gs = vertexGrid.GetGridSize();
 				glm::f32 sensitivity = 0.1f; //TODO: This should be config value
 				
-				VertexGrid::Vertex* vertex = vertexGrid.GetVertex(selectedVertex);
+				
 				
 				bool changed = false;
 
@@ -202,6 +202,8 @@ void Application::RenderGUI()
 				changed = ImGui::DragInt("Z", &selectedVertex.z, sensitivity, 0, gs.z) || changed;
 				if (changed)
 				{
+					VertexGrid::Vertex* vertex = vertexGrid.GetVertex(selectedVertex);
+
 					kult::get<Component::Position>(cubeEntity).pos = vertex->position;
 
 					auto debugRenderData = kult::get<Component::DebugRender>(vertexRelationEntity);
