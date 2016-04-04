@@ -39,7 +39,12 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		configManager.Get("camera/fSpeed")->Get<glm::f32>()
 	};
 
-	//Particle cloud
+	CreateParticleCloud();
+	CreateVertexGrid();
+}
+
+void Application::CreateParticleCloud()
+{
 	kult::add<Component::Position>(particleCloud) = {
 		glm::vec3(0, 0, 0),
 		glm::quat(),
@@ -52,6 +57,10 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		particleManager.Get("1.bin"),
 		glm::vec3(1, 0, 0)
 	};
+}
+
+void Application::CreateVertexGrid()
+{
 	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
 
 	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.04f, 0.038f);
@@ -63,7 +72,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	std::vector<AssetManager::ParticleList::Particle> particles;
 	std::vector<VertexGrid::Vertex>* vertices = vertexGrid.GetVertices();
 
-	for (auto i: *vertices)
+	for (auto i : *vertices)
 	{
 		particles.push_back({ i.position, glm::f32(2.0f), glm::f32(0.1f) });
 	}
@@ -95,7 +104,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		true,
 		vertexRelationLines,
 		glm::vec3(0, 0, 1)
-	};	
+	};
 
 	glm::f32 scale = vertexGrid.GetVertexBoundingBoxSize();
 	kult::add<Component::Position>(cubeEntity) = {
@@ -109,11 +118,11 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		false,
 		false,
 		false,
-		true,
+		false,
 		glm::vec3(0, 1, 0)
 	};
-
 }
+
 Application::~Application()
 {
 	ImGui_ImplSdlGL3_Shutdown();

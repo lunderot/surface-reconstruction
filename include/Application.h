@@ -47,9 +47,13 @@ private:
 	glm::vec3 clearColor;
 
 private:
+	void CreateParticleCloud();
+	void CreateVertexGrid();
 	void RenderGUI();
+
 public:
 	Application(glm::uvec2 screenSize, const std::string& title, int argc, char* argv[]);
+
 	virtual ~Application();
 
 	void HandleEvent(SDL_Event& event);
