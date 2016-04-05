@@ -19,7 +19,10 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	showInfoBox(true),
 	showVertexRelation(false),
 	clearColor(0.2f, 0.2f, 0.2f),
-	selectedVertex(0, 0, 0)
+	selectedVertex(0, 0, 0),
+	granularity(0.04f),
+	particleRadius(0.038f),
+	vertexBoundingBoxFactor(4.0f)
 {
 
 	ImGui_ImplSdlGL3_Init(window);
@@ -39,7 +42,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		configManager.Get("camera/fSpeed")->Get<glm::f32>()
 	};
 
-	AssetManager::ParticleList* particleList = particleManager.Get("1.bin");
+	particleList = particleManager.Get("1.bin");
 	CreateParticleCloud(particleList);
 	CreateVertexGrid(particleList);
 }
@@ -53,7 +56,7 @@ void Application::CreateParticleCloud(AssetManager::ParticleList* particleList)
 	};
 	kult::add<Component::DebugRender>(particleCloud) =
 	{
-		true,
+		false,
 		false,
 		particleList,
 		glm::vec3(1, 0, 0)
@@ -62,7 +65,7 @@ void Application::CreateParticleCloud(AssetManager::ParticleList* particleList)
 
 void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 {
-	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), 0.04f, 0.038f);
+	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), granularity, particleRadius, vertexBoundingBoxFactor);
 	
 	//Adds particle references to the vertices
 	for (auto& particle : *particleList->GetParticles())
@@ -70,10 +73,7 @@ void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 		vertexGrid.AddParticleToGrid(&particle);
 	}
 
-	//glm::vec3 pos = particleList->GetMin();
-	//glm::f32 radius = 0.038f;
-	//pos.x += radius * 2;
-	//vertexGrid.AddParticleToGrid(new AssetManager::ParticleList::Particle{ pos, 2.0f, 1.0f });
+	vertexGrid.CalculateScalarValues();
 
 	//Creates visible particles for each vertex in the grid
 	////
@@ -82,7 +82,7 @@ void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 
 	for (auto i : *vertices)
 	{
-		vertexParticles.push_back({ i.position, glm::f32(2.0f), glm::f32(0.1f) });
+		vertexParticles.push_back({ i.position, glm::f32(2.0f), i.scalarValue });
 	}
 	vertexGridParticles = new AssetManager::ParticleList(&vertexParticles);
 
@@ -93,16 +93,18 @@ void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 	};
 	kult::add<Component::DebugRender>(vertexParticlesEntity) =
 	{
-		false,
+		true,
 		false,
 		vertexGridParticles,
-		glm::vec3(0, 0, 0)
+		glm::vec3(0, 1, 1),
+		0.1f,
+		0.0f
 	};
 	////
 
 	//Creates an entity for showing lines between a vertex and it's related particles
 	////
-	VertexGrid::Vertex*  vertex = vertexGrid.GetVertex(selectedVertex);
+	VertexGrid::Vertex* vertex = vertexGrid.GetVertex(selectedVertex);
 	vertexRelationLines = new AssetManager::ParticleList(vertex->position, &vertex->particles);
 
 	kult::add<Component::Position>(vertexRelationEntity) = {
@@ -145,6 +147,7 @@ Application::~Application()
 	particleCloud.purge();
 	vertexParticlesEntity.purge();
 	delete vertexGridParticles;
+	delete vertexRelationLines;
 }
 
 void Application::HandleEvent(SDL_Event& event)
@@ -243,6 +246,29 @@ void Application::RenderGUI()
 				}
 			}
 
+			ImGui::DragFloat("scalarRangeMax", &kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMax, 0.0005, -0.04, 0.1);
+			ImGui::DragFloat("scalarRangeMin", &kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMin, 0.0005, -0.04, 0.1);
+			
+			ImGui::DragFloat("granularity", &granularity, 0.0001f, 0.02f, 0.1f);
+			ImGui::DragFloat("particleRadius", &particleRadius, 0.0001f, 0.001f, 0.1f);
+			if (ImGui::DragFloat("vertexBoundingBoxFactor", &vertexBoundingBoxFactor, 0.05f, 1.0f, 11.0f, "%.0f"))
+			{
+				vertexBoundingBoxFactor = glm::floor(vertexBoundingBoxFactor);
+			}
+			if (ImGui::Button("Reset grid settings"))
+			{
+				kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMax = 0.1f;
+				kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMin = 0.0f;
+				granularity = 0.04f;
+				particleRadius = 0.038f;
+				vertexBoundingBoxFactor = 4.0f;
+			}
+			if (ImGui::Button("Create vertex grid"))
+			{
+				delete vertexGridParticles;
+				delete vertexRelationLines;
+				CreateVertexGrid(particleList);
+			}
 		ImGui::End();
 	}
 

@@ -3,7 +3,7 @@
 VertexGrid::VertexGrid()
 {}
 
-VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity, glm::f32 particleRadius)
+VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity, glm::f32 particleRadius, glm::f32 vertexBoundingBoxFactor)
 {
 	this->particleRadius = particleRadius;
 	this->granularity = granularity;
@@ -11,7 +11,7 @@ VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 gran
 	this->lowerBound = lowerBound;
 
 	//should not be hardcoded
-	vertexBoundingBoxSize = 4.0f * particleRadius;
+	vertexBoundingBoxSize = vertexBoundingBoxFactor * particleRadius;
 
 	glm::vec3 boundingBoxSize = glm::abs(upperBound - lowerBound);
 	gridSize = glm::ivec3(boundingBoxSize / granularity);
@@ -38,7 +38,48 @@ VertexGrid::~VertexGrid()
 
 void VertexGrid::CalculateScalarValues()
 {
+	glm::f32 R = vertexBoundingBoxSize;
 
+	glm::f32 scalarMax = std::numeric_limits<float>::min();
+	glm::f32 scalarMin = std::numeric_limits<float>::max();
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		glm::vec3 numerator;
+		glm::vec3 denominator;
+
+		int it = 0;
+
+		Vertex* vert = &vertices[i];
+		for (AssetManager::ParticleList::Particle* p : vert->particles)
+		{
+			glm::f32 s = glm::length(vert->position - p->position) / R;
+			glm::f32 k = glm::max(0.0f, glm::pow(1 - pow(s, 2), 3));
+			numerator += p->position * k;
+			denominator += k;
+			it++;
+		}
+
+		if (it > 0)
+		{
+			glm::vec3 averageParticlePos = numerator / denominator;
+
+			vert->scalarValue = glm::length(vert->position - averageParticlePos) - particleRadius;
+
+			if (vert->scalarValue > scalarMax)
+			{
+				scalarMax = vert->scalarValue;
+			}
+			if (vert->scalarValue < scalarMin)
+			{
+				scalarMin = vert->scalarValue;
+			}
+		}
+		else
+		{
+			vert->scalarValue = 1.0f;
+		}
+	}
 }
 
 void VertexGrid::AddParticleToGrid(AssetManager::ParticleList::Particle* particle)

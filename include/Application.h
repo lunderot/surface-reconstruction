@@ -35,6 +35,7 @@ private:
 	kult::entity vertexRelationEntity;
 	kult::entity cubeEntity;
 
+	AssetManager::ParticleList* particleList;
 	VertexGrid vertexGrid;
 	AssetManager::ParticleList* vertexGridParticles;
 	AssetManager::ParticleList* vertexRelationLines;
@@ -45,6 +46,9 @@ private:
 	bool showVertexRelation;
 	glm::ivec3 selectedVertex;
 	glm::vec3 clearColor;
+	glm::f32 granularity;
+	glm::f32 particleRadius;
+	glm::f32 vertexBoundingBoxFactor;
 
 private:
 	void CreateParticleCloud(AssetManager::ParticleList* particleList);

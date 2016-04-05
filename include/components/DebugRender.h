@@ -11,6 +11,8 @@ namespace Component
 		bool renderLines;
 		AssetManager::ParticleList* mesh;
 		glm::vec3 color;
+		glm::f32 scalarRangeMax;
+		glm::f32 scalarRangeMin;
 		template<typename T> friend T&operator<<(T &os, const DebugRenderData &self) {
 			return os << "pren", os;
 		}
