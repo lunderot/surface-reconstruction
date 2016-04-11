@@ -9,7 +9,7 @@ public:
 	struct Vertex
 	{
 		glm::vec3 position;
-		glm::int32 scalarValue;
+		glm::f32 scalarValue;
 		std::vector<AssetManager::ParticleList::Particle*> particles;
 	};
 
@@ -24,7 +24,7 @@ private:
 
 public:
 	VertexGrid();
-	VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 vertexBoundingBoxSize, glm::f32 particleRadius);
+	VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity, glm::f32 particleRadius, glm::f32 vertexBoundingBoxFactor);
 	~VertexGrid();
 	void CalculateScalarValues();
 	void AddParticleToGrid(AssetManager::ParticleList::Particle*);

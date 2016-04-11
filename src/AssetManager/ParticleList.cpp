@@ -64,7 +64,7 @@ namespace AssetManager
 			{
 				min.z = vertex.z;
 			}
-			particles.push_back({ vertex, 2.0f, 1.0f }); //TODO: This value shouldn't be hardcoded to 0.038f
+			particles.push_back({ vertex, 2.0f, 10000.0f }); //TODO: This value shouldn't be hardcoded to 0.038f
 		}
 
 		GenerateBuffers();

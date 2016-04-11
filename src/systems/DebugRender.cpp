@@ -37,6 +37,8 @@ namespace Systems
 				shader->SetUniform("model", model);
 				shader->SetUniform("scale", positionData.scale);
 				shader->SetUniform("color", renderData.color);
+				shader->SetUniform("scalarRangeMax", renderData.scalarRangeMax);
+				shader->SetUniform("scalarRangeMin", renderData.scalarRangeMin);
 
 				glBindVertexArray(renderData.mesh->GetVAO());
 				GLenum renderMode = GL_POINTS;
