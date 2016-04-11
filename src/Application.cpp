@@ -21,7 +21,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	clearColor(0.2f, 0.2f, 0.2f),
 	selectedVertex(0, 0, 0),
 	granularity(0.04f),
-	particleRadius(0.038f),
+	particleRadius(0.025f),
 	vertexBoundingBoxFactor(4.0f)
 {
 
@@ -56,7 +56,7 @@ void Application::CreateParticleCloud(AssetManager::ParticleList* particleList)
 	};
 	kult::add<Component::DebugRender>(particleCloud) =
 	{
-		false,
+		true,
 		false,
 		particleList,
 		glm::vec3(1, 0, 0)
@@ -93,12 +93,10 @@ void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 	};
 	kult::add<Component::DebugRender>(vertexParticlesEntity) =
 	{
-		true,
+		false,
 		false,
 		vertexGridParticles,
-		glm::vec3(0, 1, 1),
-		0.1f,
-		0.0f
+		glm::vec3(0, 1, 1)
 	};
 	////
 
@@ -245,9 +243,6 @@ void Application::RenderGUI()
 					
 				}
 			}
-
-			ImGui::DragFloat("scalarRangeMax", &kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMax, 0.0005, -0.04, 0.1);
-			ImGui::DragFloat("scalarRangeMin", &kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMin, 0.0005, -0.04, 0.1);
 			
 			ImGui::DragFloat("granularity", &granularity, 0.0001f, 0.02f, 0.1f);
 			ImGui::DragFloat("particleRadius", &particleRadius, 0.0001f, 0.001f, 0.1f);
@@ -257,8 +252,6 @@ void Application::RenderGUI()
 			}
 			if (ImGui::Button("Reset grid settings"))
 			{
-				kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMax = 0.1f;
-				kult::get<Component::DebugRender>(vertexParticlesEntity).scalarRangeMin = 0.0f;
 				granularity = 0.04f;
 				particleRadius = 0.038f;
 				vertexBoundingBoxFactor = 4.0f;
