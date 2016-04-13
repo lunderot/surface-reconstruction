@@ -43,27 +43,18 @@ namespace AssetManager
 
 	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity)
 	{
-		//unsigned char iFlagsIndex = data;
-		
 		if (data == 0) //No vertices active -> no triangles generated
 		{
 			return;
 		}
-		//int iEdgeFlags = edgeTable[iFlagsIndex]; //Get which edges are intersecting the surface
-
 		const int* triangleEdgeData = triTable[data];
 
-		for (int i = 0; i < 16; i+=3)
+		int i = 0;
+		while (triangleEdgeData[i] != -1)
 		{
-			if (triangleEdgeData[i] == -1)
-			{
-				break;
-			}
-			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i+0]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
-			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i+1]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
-			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i+2]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			i++;
 		}
-		
 	}
 
 	Mesh::Mesh(std::istream* buffer, const std::string& filename)
