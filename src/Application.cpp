@@ -45,6 +45,22 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	particleList = particleManager.Get("1.bin");
 	CreateParticleCloud(particleList);
 	CreateVertexGrid(particleList);
+
+	kult::add<Component::Position>(surface) = {
+		glm::vec3(0, 0, 0),
+		glm::quat(),
+		glm::vec3(1, 1, 1)
+	};
+	surfaceMesh = new AssetManager::Mesh(&vertexGrid);
+	kult::add<Component::Render>(surface) = {
+		surfaceMesh,
+		nullptr,
+		true,
+		false,
+		false,
+		false,
+		glm::vec3(1, 1, 1)
+	};
 }
 
 void Application::CreateParticleCloud(AssetManager::ParticleList* particleList)
@@ -138,12 +154,21 @@ void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 	////
 }
 
+
+void Application::UpdateSurfaceMesh()
+{
+	delete surfaceMesh;
+	surfaceMesh = new AssetManager::Mesh(&vertexGrid);
+	kult::get<Component::Render>(surface).mesh = surfaceMesh;
+}
+
 Application::~Application()
 {
 	ImGui_ImplSdlGL3_Shutdown();
 	camera.purge();
 	particleCloud.purge();
 	vertexParticlesEntity.purge();
+	surface.purge();
 	delete vertexGridParticles;
 	delete vertexRelationLines;
 }
@@ -261,6 +286,7 @@ void Application::RenderGUI()
 				delete vertexGridParticles;
 				delete vertexRelationLines;
 				CreateVertexGrid(particleList);
+				UpdateSurfaceMesh();
 			}
 		ImGui::End();
 	}

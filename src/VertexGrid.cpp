@@ -126,3 +126,8 @@ glm::f32 VertexGrid::GetVertexBoundingBoxSize() const
 {
 	return vertexBoundingBoxSize;
 }
+
+glm::f32 VertexGrid::GetGranularity() const
+{
+	return granularity;
+}

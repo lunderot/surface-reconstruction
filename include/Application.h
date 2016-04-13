@@ -34,11 +34,13 @@ private:
 	kult::entity vertexParticlesEntity;
 	kult::entity vertexRelationEntity;
 	kult::entity cubeEntity;
+	kult::entity surface;
 
 	AssetManager::ParticleList* particleList;
 	VertexGrid vertexGrid;
 	AssetManager::ParticleList* vertexGridParticles;
 	AssetManager::ParticleList* vertexRelationLines;
+	AssetManager::Mesh* surfaceMesh;
 
 	//GUI varaiables
 	bool showGui;
@@ -53,6 +55,7 @@ private:
 private:
 	void CreateParticleCloud(AssetManager::ParticleList* particleList);
 	void CreateVertexGrid(AssetManager::ParticleList* particleList);
+	void UpdateSurfaceMesh();
 	void RenderGUI();
 
 public:

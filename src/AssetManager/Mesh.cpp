@@ -1,7 +1,71 @@
 #include "AssetManager/Mesh.h"
 
+#include <iostream>
+
 namespace AssetManager
 {
+	Mesh::Mesh(VertexGrid* vertexGrid) //Generate a mesh from poits using cube marching
+	{
+		glm::uvec3 gridSize = vertexGrid->GetGridSize();
+		glm::f32 granularity = vertexGrid->GetGranularity();
+
+		std::vector<Vertex> out;
+
+		for (int z = 0; z < gridSize.z - 1; z++)
+		{
+			for (int y = 0; y < gridSize.y - 1; y++)
+			{
+				for (int x = 0; x < gridSize.x - 1; x++)
+				{
+					unsigned char data = 0;
+					glm::f32 threshold = 0.01f;
+
+					//If the scalar value for a specific node is over threshold, add it to the marching cube data
+					data |= vertexGrid->GetVertex({ x + 0, y + 0, z + 0 })->scalarValue > threshold	? 1   : 0;
+					data |= vertexGrid->GetVertex({ x + 0, y + 1, z + 0 })->scalarValue > threshold ? 2   : 0;
+					data |= vertexGrid->GetVertex({ x + 1, y + 1, z + 0 })->scalarValue > threshold ? 4	  : 0;
+					data |= vertexGrid->GetVertex({ x + 1, y + 0, z + 0 })->scalarValue > threshold ? 8	  : 0;
+
+					data |= vertexGrid->GetVertex({ x + 0, y + 0, z + 1 })->scalarValue > threshold ? 16  : 0;
+					data |= vertexGrid->GetVertex({ x + 0, y + 1, z + 1 })->scalarValue > threshold ? 32  : 0;
+					data |= vertexGrid->GetVertex({ x + 1, y + 1, z + 1 })->scalarValue > threshold ? 64  : 0;
+					data |= vertexGrid->GetVertex({ x + 1, y + 0, z + 1 })->scalarValue > threshold ? 128 : 0;
+
+
+
+					AddMarchingCubesTriangles(out, vertexGrid->GetVertex({ x, y, z })->position, data, granularity);
+
+				}
+			}
+		}
+		CreateBuffers(out);
+	}
+
+	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity)
+	{
+		//unsigned char iFlagsIndex = data;
+		
+		if (data == 0) //No vertices active -> no triangles generated
+		{
+			return;
+		}
+		//int iEdgeFlags = edgeTable[iFlagsIndex]; //Get which edges are intersecting the surface
+
+		const int* triangleEdgeData = triTable[data];
+
+		for (int i = 0; i < 16; i+=3)
+		{
+			if (triangleEdgeData[i] == -1)
+			{
+				break;
+			}
+			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i+0]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i+1]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i+2]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+		}
+		
+	}
+
 	Mesh::Mesh(std::istream* buffer, const std::string& filename)
 	{
 		Load(buffer, filename);
@@ -90,7 +154,11 @@ namespace AssetManager
 	{
 		std::vector<Vertex> out;
 		LoadMesh(buffer, out);
+		CreateBuffers(out);
+	}
 
+	void Mesh::CreateBuffers(std::vector<Vertex>& out)
+	{
 		//Generate vertex buffer and vertex array object
 		glGenBuffers(1, &vbo);
 		glGenVertexArrays(1, &vao);
