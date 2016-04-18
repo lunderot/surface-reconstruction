@@ -1,14 +1,16 @@
-#include "VertexGrid.h"
+﻿#include "VertexGrid.h"
 
 VertexGrid::VertexGrid()
 {}
 
-VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity, glm::f32 particleRadius, glm::f32 vertexBoundingBoxFactor)
+VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 granularity, glm::f32 particleRadius, glm::f32 tHigh, glm::f32 tLow, glm::f32 vertexBoundingBoxFactor)
 {
 	this->particleRadius = particleRadius;
 	this->granularity = granularity;
 	this->upperBound = upperBound;
 	this->lowerBound = lowerBound;
+	this->tHigh = tHigh;
+	this->tLow = tLow;
 
 	//should not be hardcoded
 	vertexBoundingBoxSize = vertexBoundingBoxFactor * particleRadius;
@@ -45,12 +47,13 @@ void VertexGrid::CalculateScalarValues()
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
+		Vertex* vert = &vertices[i];
 		glm::vec3 numerator;
 		glm::vec3 denominator;
-
 		int it = 0;
-
-		Vertex* vert = &vertices[i];
+		
+		// x = ∑j xj k(|x − xj| / R)
+		//		∑j k(|x − xj| / R)
 		for (AssetManager::ParticleList::Particle* p : vert->particles)
 		{
 			glm::f32 s = glm::length(vert->position - p->position) / R;
@@ -62,9 +65,14 @@ void VertexGrid::CalculateScalarValues()
 
 		if (it > 0)
 		{
+			glm::mat3 gradient; // = ?
+			glm::f32 EVmax = CalculateMaximumEigenvalue(gradient);
+			glm::f32 f = CalculateSpuriousBlobFactor(EVmax);
+
 			glm::vec3 averageParticlePos = numerator / denominator;
 
-			vert->scalarValue = glm::length(vert->position - averageParticlePos) - particleRadius;
+			//φ(x) = |x − ¯x| − ¯r * f
+			vert->scalarValue = glm::length(vert->position - averageParticlePos) - particleRadius * f;
 
 			if (vert->scalarValue > scalarMax)
 			{
@@ -79,6 +87,39 @@ void VertexGrid::CalculateScalarValues()
 		{
 			vert->scalarValue = 1.0f;
 		}
+	}
+}
+
+glm::f32 VertexGrid::CalculateMaximumEigenvalue(glm::mat3 gradient)
+{
+	vmml::mat3f vmmGradient(
+		gradient[0].x, gradient[0].y, gradient[0].z,
+		gradient[1].x, gradient[1].y, gradient[1].z,
+		gradient[2].x, gradient[2].y, gradient[2].z
+		);
+	vmml::vec3f eigenvalues;
+	vmml::mat3f eigenvectors;
+	size_t rotationCount;
+	vmml::solveJacobi3x3(vmmGradient, eigenvalues, eigenvectors, rotationCount);
+
+	return eigenvalues.getMaxComponent();
+}
+
+glm::f32 VertexGrid::CalculateSpuriousBlobFactor(glm::f32 EVmax)
+{
+	if (EVmax < tLow)
+	{
+		return 1.0;
+	}
+	else
+	{
+		//γ = tHigh − EVmax
+		//		tHigh − tLow
+		glm::f32 gamma = (tHigh - EVmax) / (tHigh - tLow);
+
+		//f = γ^3 − 3γ^2 + 3γ;
+		glm::f32 gammaPowTwo = gamma * gamma;
+		return gamma * gammaPowTwo - 3 * gammaPowTwo + 3 * gamma;
 	}
 }
 

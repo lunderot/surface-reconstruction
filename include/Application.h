@@ -50,6 +50,8 @@ private:
 	glm::vec3 clearColor;
 	glm::f32 granularity;
 	glm::f32 particleRadius;
+	glm::f32 tHigh;
+	glm::f32 tLow;
 	glm::f32 vertexBoundingBoxFactor;
 
 private:

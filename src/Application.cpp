@@ -22,7 +22,9 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	selectedVertex(0, 0, 0),
 	granularity(0.04f),
 	particleRadius(0.025f),
-	vertexBoundingBoxFactor(4.0f)
+	vertexBoundingBoxFactor(4.0f),
+	tHigh(3.5),
+	tLow(0.4)
 {
 
 	ImGui_ImplSdlGL3_Init(window);
@@ -81,7 +83,7 @@ void Application::CreateParticleCloud(AssetManager::ParticleList* particleList)
 
 void Application::CreateVertexGrid(AssetManager::ParticleList* particleList)
 {
-	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), granularity, particleRadius, vertexBoundingBoxFactor);
+	vertexGrid = VertexGrid(particleList->GetMin(), particleList->GetMax(), granularity, particleRadius, tHigh, tLow, vertexBoundingBoxFactor);
 	
 	//Adds particle references to the vertices
 	for (auto& particle : *particleList->GetParticles())
