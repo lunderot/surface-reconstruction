@@ -65,14 +65,14 @@ void VertexGrid::CalculateScalarValues()
 
 		if (it > 0)
 		{
-			glm::mat3 gradient; // = ?
-			glm::f32 EVmax = CalculateMaximumEigenvalue(gradient);
-			glm::f32 f = CalculateSpuriousBlobFactor(EVmax);
+			//glm::mat3 gradient; //=
+			//glm::f32 EVmax = CalculateMaximumEigenvalue(gradient);
+			//glm::f32 f = CalculateSpuriousBlobFactor(EVmax);
 
 			glm::vec3 averageParticlePos = numerator / denominator;
 
 			//φ(x) = |x − ¯x| − ¯r * f
-			vert->scalarValue = glm::length(vert->position - averageParticlePos) - particleRadius * f;
+			vert->scalarValue = glm::length(vert->position - averageParticlePos) - particleRadius;// *f;
 
 			if (vert->scalarValue > scalarMax)
 			{
