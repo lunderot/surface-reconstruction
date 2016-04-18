@@ -4,7 +4,7 @@
 
 namespace AssetManager
 {
-	Mesh::Mesh(VertexGrid* vertexGrid) //Generate a mesh from poits using cube marching
+	Mesh::Mesh(VertexGrid* vertexGrid) //Generate a mesh from points using cube marching
 	{
 		glm::uvec3 gridSize = vertexGrid->GetGridSize();
 		glm::f32 granularity = vertexGrid->GetGranularity();
@@ -19,21 +19,33 @@ namespace AssetManager
 				{
 					unsigned char data = 0;
 					glm::f32 threshold = 0.01f;
+					glm::f32 weights[8] =
+					{
+						vertexGrid->GetVertex({ x + 0, y + 0, z + 0 })->scalarValue,
+						vertexGrid->GetVertex({ x + 0, y + 1, z + 0 })->scalarValue,
+						vertexGrid->GetVertex({ x + 1, y + 1, z + 0 })->scalarValue,
+						vertexGrid->GetVertex({ x + 1, y + 0, z + 0 })->scalarValue,
+
+						vertexGrid->GetVertex({ x + 0, y + 0, z + 1 })->scalarValue,
+						vertexGrid->GetVertex({ x + 0, y + 1, z + 1 })->scalarValue,
+						vertexGrid->GetVertex({ x + 1, y + 1, z + 1 })->scalarValue,
+						vertexGrid->GetVertex({ x + 1, y + 0, z + 1 })->scalarValue
+					};
 
 					//If the scalar value for a specific node is over threshold, add it to the marching cube data
-					data |= vertexGrid->GetVertex({ x + 0, y + 0, z + 0 })->scalarValue > threshold	? 1   : 0;
-					data |= vertexGrid->GetVertex({ x + 0, y + 1, z + 0 })->scalarValue > threshold ? 2   : 0;
-					data |= vertexGrid->GetVertex({ x + 1, y + 1, z + 0 })->scalarValue > threshold ? 4	  : 0;
-					data |= vertexGrid->GetVertex({ x + 1, y + 0, z + 0 })->scalarValue > threshold ? 8	  : 0;
+					data |= weights[0] > threshold ? 1   : 0;
+					data |= weights[1] > threshold ? 2   : 0;
+					data |= weights[2] > threshold ? 4   : 0;
+					data |= weights[3] > threshold ? 8   : 0;
 
-					data |= vertexGrid->GetVertex({ x + 0, y + 0, z + 1 })->scalarValue > threshold ? 16  : 0;
-					data |= vertexGrid->GetVertex({ x + 0, y + 1, z + 1 })->scalarValue > threshold ? 32  : 0;
-					data |= vertexGrid->GetVertex({ x + 1, y + 1, z + 1 })->scalarValue > threshold ? 64  : 0;
-					data |= vertexGrid->GetVertex({ x + 1, y + 0, z + 1 })->scalarValue > threshold ? 128 : 0;
+					data |= weights[4] > threshold ? 16  : 0;
+					data |= weights[5] > threshold ? 32  : 0;
+					data |= weights[6] > threshold ? 64  : 0;
+					data |= weights[7] > threshold ? 128 : 0;
 
 
 
-					AddMarchingCubesTriangles(out, vertexGrid->GetVertex({ x, y, z })->position, data, granularity);
+					AddMarchingCubesTriangles(out, vertexGrid->GetVertex({ x, y, z })->position, data, granularity, weights);
 
 				}
 			}
@@ -41,7 +53,7 @@ namespace AssetManager
 		CreateBuffers(out);
 	}
 
-	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity)
+	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity, glm::f32 weights[8])
 	{
 		if (data == 0) //No vertices active -> no triangles generated
 		{
@@ -49,10 +61,26 @@ namespace AssetManager
 		}
 		const int* triangleEdgeData = triTable[data];
 
+		
+
+
 		int i = 0;
 		while (triangleEdgeData[i] != -1)
 		{
-			out.push_back({ vertexPosition + edgeToCoord[triangleEdgeData[i]] * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			int currentEdge = triangleEdgeData[i];
+			const int* vert = edgeToVert[currentEdge];
+			//f = b/(a+b)
+
+			//if weight == 0 => on surface
+			//if weight > 0 => outside volume
+			//if weight < 0 => inside volume
+
+			glm::f32 a = glm::max(weights[vert[0]], 0.0f);
+			glm::f32 b = glm::max(weights[vert[1]], 0.0f);
+			glm::f32 factor = b / (a + b);
+			//Factor is now a value inbetween 0 and 1
+
+			out.push_back({ vertexPosition + glm::mix(vertToCoord[vert[0]], vertToCoord[vert[1]], factor) * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
 			i++;
 		}
 	}

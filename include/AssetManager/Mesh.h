@@ -318,6 +318,38 @@ const glm::vec3 edgeToCoord[12] = {
 	{ 1.0f, 0.0f, 0.5f },
 };
 
+
+//Lookuptable for converting vertex number to coordinate
+const glm::vec3 vertToCoord[8] = {
+	{0, 0, 0},
+	{0, 1, 0},
+	{1, 1, 0},
+	{1, 0, 0},
+
+	{0, 0, 1},
+	{0, 1, 1},
+	{1, 1, 1},
+	{1, 0, 1}
+};
+
+//Lookup table to convert edge into vertices connected to
+const int edgeToVert[12][2] = {
+	{ 0, 1 },
+	{ 1, 2 },
+	{ 2, 3 },
+	{ 3, 0 },
+
+	{ 4, 5 },
+	{ 5, 6 },
+	{ 6, 7 },
+	{ 7, 4 },
+
+	{ 0, 4 },
+	{ 1, 5 },
+	{ 2, 6 },
+	{ 3, 7 },
+};
+
 namespace AssetManager
 {
 	class Mesh
@@ -336,7 +368,7 @@ namespace AssetManager
 
 		void LoadMesh(std::istream* buffer, std::vector<Vertex>& out);
 
-		void AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity);
+		void AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity, glm::f32 weights[8]);
 	public:
 		Mesh(VertexGrid * vertexGrid);
 		Mesh(std::istream* buffer, const std::string& filename);
