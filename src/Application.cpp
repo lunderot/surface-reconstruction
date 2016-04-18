@@ -23,8 +23,8 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 	granularity(0.04f),
 	particleRadius(0.025f),
 	vertexBoundingBoxFactor(4.0f),
-	tHigh(3.5),
-	tLow(0.4)
+	tHigh(3.5f),
+	tLow(0.4f)
 {
 
 	ImGui_ImplSdlGL3_Init(window);

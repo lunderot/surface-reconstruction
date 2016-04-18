@@ -71,9 +71,9 @@ bool solveJacobi3x3( Matrix3< Real >& a, Vector3< Real >& d,
         }
         Real tresh = ( i < 4 ) ? 0.2 * sm / 9.0 : 0.0;
     
-        for ( ssize_t ip = 0; ip < 2; ++ip ) // ip < n - 1  
+        for (size_t ip = 0; ip < 2; ++ip ) // ip < n - 1  
         {
-            for ( ssize_t iq = ip + 1; iq < 3; ++iq )
+            for (size_t iq = ip + 1; iq < 3; ++iq )
             {
                 Real g = 100.0 * fabs( a.m[ip][iq] );
                 // this has to be fabs( x ) + g == fabs( x ) and NOT
@@ -118,14 +118,14 @@ bool solveJacobi3x3( Matrix3< Real >& a, Vector3< Real >& d,
                         d[iq] += h;
                         a.m[ip][iq] = 0.0;
                         
-                        for ( ssize_t j = 0; j <= ip - 1; ++j ) 
+                        for (size_t j = 0; j <= ip - 1; ++j )
                         {
                             g = a.m[j][ip];
                             h = a.m[j][iq];
                             a.m[j][ip] = g - s * ( h + g * tau );
                             a.m[j][iq] = h + s * ( g - h * tau );
                         }
-                        for ( ssize_t j = ip + 1; j <= iq - 1; ++j ) 
+                        for (size_t j = ip + 1; j <= iq - 1; ++j )
                         {
                               g = a.m[ip][j];
                               h = a.m[j][iq];
