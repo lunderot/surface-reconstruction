@@ -18,7 +18,6 @@ namespace AssetManager
 				for (int x = 0; x < gridSize.x - 1; x++)
 				{
 					unsigned char data = 0;
-					glm::f32 threshold = 0.01f;
 					glm::f32 weights[8] =
 					{
 						vertexGrid->GetVertex({ x + 0, y + 0, z + 0 })->scalarValue,
@@ -32,16 +31,16 @@ namespace AssetManager
 						vertexGrid->GetVertex({ x + 1, y + 0, z + 1 })->scalarValue
 					};
 
-					//If the scalar value for a specific node is over threshold, add it to the marching cube data
-					data |= weights[0] > threshold ? 1 : 0;
-					data |= weights[1] > threshold ? 2 : 0;
-					data |= weights[2] > threshold ? 4 : 0;
-					data |= weights[3] > threshold ? 8 : 0;
+					//If the scalar value for a specific node is positive, add it to the marching cube data
+					data |= weights[0] > 0.0f ? 1 : 0;
+					data |= weights[1] > 0.0f ? 2 : 0;
+					data |= weights[2] > 0.0f ? 4 : 0;
+					data |= weights[3] > 0.0f ? 8 : 0;
 
-					data |= weights[4] > threshold ? 16 : 0;
-					data |= weights[5] > threshold ? 32 : 0;
-					data |= weights[6] > threshold ? 64 : 0;
-					data |= weights[7] > threshold ? 128 : 0;
+					data |= weights[4] > 0.0f ? 16 : 0;
+					data |= weights[5] > 0.0f ? 32 : 0;
+					data |= weights[6] > 0.0f ? 64 : 0;
+					data |= weights[7] > 0.0f ? 128 : 0;
 
 
 
@@ -60,32 +59,20 @@ namespace AssetManager
 
 	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity, glm::f32 weights[8])
 	{
-		if (data == 0) //No vertices active -> no triangles generated
+		if (data == 0 || data == 255) //No vertices active -> no triangles generated
 		{
 			return;
 		}
 		const int* triangleEdgeData = triTable[data];
-
-
-
 
 		int i = 0;
 		while (triangleEdgeData[i] != -1)
 		{
 			int currentEdge = triangleEdgeData[i];
 			const int* vert = edgeToVert[currentEdge];
-			//f = b/(a+b)
+			glm::vec3 interpolatedVertex = (vertToCoord[vert[0]] + (-weights[vert[0]] / (weights[vert[1]] - weights[vert[0]])) * (vertToCoord[vert[1]] - vertToCoord[vert[0]]));
 
-			//if weight == 0 => on surface
-			//if weight > 0 => outside volume
-			//if weight < 0 => inside volume
-
-			glm::f32 a = glm::max(weights[vert[0]], 0.0f);
-			glm::f32 b = glm::max(weights[vert[1]], 0.0f);
-			glm::f32 factor = b / (a + b);
-			//Factor is now a value inbetween 0 and 1
-
-			out.push_back({ vertexPosition + glm::mix(vertToCoord[vert[0]], vertToCoord[vert[1]], factor) * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			out.push_back({ vertexPosition + interpolatedVertex * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
 			i++;
 		}
 	}
