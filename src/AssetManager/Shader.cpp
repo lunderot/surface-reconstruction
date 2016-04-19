@@ -63,6 +63,12 @@ namespace AssetManager
 		glUniform4fv(glGetUniformLocation(program, name), 1, glm::value_ptr(vector));
 	}
 
+	void Shader::SetUniform(const GLchar* name, const glm::mat3& matrix)
+	{
+		SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");
+		glUniformMatrix3fv(glGetUniformLocation(program, name), 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
 	void Shader::SetUniform(const GLchar* name, const glm::mat4& matrix)
 	{
 		SDL_assert(IsInUse() && "This shader does not match current shader on the GPU");

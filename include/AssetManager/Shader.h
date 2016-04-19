@@ -35,6 +35,7 @@ namespace AssetManager
 		void SetUniform(const GLchar* name, const glm::vec3& vector);
 		void SetUniform(const GLchar* name, const glm::vec4& vector);
 
+		void SetUniform(const GLchar* name, const glm::mat3& matrix);
 		void SetUniform(const GLchar* name, const glm::mat4& matrix);
 
 		void Load(std::istream* buffer, const std::string& filename);

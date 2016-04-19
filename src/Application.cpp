@@ -61,7 +61,7 @@ Application::Application(glm::uvec2 screenSize, const std::string& title, int ar
 		false,
 		false,
 		false,
-		glm::vec3(1, 1, 1)
+		glm::vec3(0.0, 0.0, 0.5)
 	};
 }
 

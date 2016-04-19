@@ -36,6 +36,8 @@ namespace Systems
 				model = glm::scale(model, positionData.scale);
 
 				shader->SetUniform("model", model);
+				shader->SetUniform("viewmodel", view * model);
+				shader->SetUniform("normal_mat", glm::transpose(glm::inverse(glm::mat3(model))));
 				shader->SetUniform("scale", positionData.scale);
 				shader->SetUniform("scaleuv", renderData.scaleUv);
 				shader->SetUniform("textured", renderData.textured);
