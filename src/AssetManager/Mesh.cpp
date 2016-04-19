@@ -33,14 +33,14 @@ namespace AssetManager
 					};
 
 					//If the scalar value for a specific node is over threshold, add it to the marching cube data
-					data |= weights[0] > threshold ? 1   : 0;
-					data |= weights[1] > threshold ? 2   : 0;
-					data |= weights[2] > threshold ? 4   : 0;
-					data |= weights[3] > threshold ? 8   : 0;
+					data |= weights[0] > threshold ? 1 : 0;
+					data |= weights[1] > threshold ? 2 : 0;
+					data |= weights[2] > threshold ? 4 : 0;
+					data |= weights[3] > threshold ? 8 : 0;
 
-					data |= weights[4] > threshold ? 16  : 0;
-					data |= weights[5] > threshold ? 32  : 0;
-					data |= weights[6] > threshold ? 64  : 0;
+					data |= weights[4] > threshold ? 16 : 0;
+					data |= weights[5] > threshold ? 32 : 0;
+					data |= weights[6] > threshold ? 64 : 0;
 					data |= weights[7] > threshold ? 128 : 0;
 
 
@@ -49,6 +49,11 @@ namespace AssetManager
 
 				}
 			}
+		}
+		for (size_t i = 0; i < out.size(); i += 3)
+		{
+			glm::vec3 normal = glm::normalize(glm::cross(out[i].position - out[i + 1].position, out[i].position - out[i + 2].position));
+			out[i].normal = out[i + 1].normal = out[i + 2].normal = normal;
 		}
 		CreateBuffers(out);
 	}
@@ -61,7 +66,7 @@ namespace AssetManager
 		}
 		const int* triangleEdgeData = triTable[data];
 
-		
+
 
 
 		int i = 0;
