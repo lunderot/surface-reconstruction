@@ -361,6 +361,7 @@ namespace AssetManager
 			glm::vec3 normal;
 			glm::vec2 uv;
 		};
+		
 	private:
 		GLuint vbo;
 		GLuint vao;
@@ -368,7 +369,7 @@ namespace AssetManager
 
 		void LoadMesh(std::istream* buffer, std::vector<Vertex>& out);
 
-		void AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity, glm::f32 weights[8]);
+		void AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::uvec3 vertexIndex, unsigned char data, glm::f32 granularity, glm::f32 weights[8], VertexGrid* vertexGrid);
 	public:
 		Mesh(VertexGrid * vertexGrid);
 		Mesh(std::istream* buffer, const std::string& filename);

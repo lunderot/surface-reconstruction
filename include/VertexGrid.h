@@ -9,11 +9,17 @@
 class VertexGrid
 {
 public:
+	struct Edge
+	{
+		int vertexRefrence[12];
+		int index = 0;
+	};
 	struct Vertex
 	{
 		glm::vec3 position;
 		glm::f32 scalarValue;
 		std::vector<AssetManager::ParticleList::Particle*> particles;
+		Edge edges[3];
 	};
 
 private:

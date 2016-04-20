@@ -17,7 +17,7 @@ VertexGrid::VertexGrid(glm::vec3 lowerBound, glm::vec3 upperBound, glm::f32 gran
 
 	glm::vec3 boundingBoxSize = glm::abs(upperBound - lowerBound);
 	gridSize = glm::ivec3(boundingBoxSize / granularity);
-	gridSize += 2; //Offset to avoid losing particles at the upper edges.
+	gridSize += 3; //Offset to avoid losing particles at the edges.
 
 	vertices.resize(gridSize.x * gridSize.y * gridSize.z);
 	

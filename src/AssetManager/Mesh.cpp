@@ -11,11 +11,11 @@ namespace AssetManager
 
 		std::vector<Vertex> out;
 
-		for (int z = 0; z < gridSize.z - 1; z++)
+		for (int z = 0; z < gridSize.z - 2; z++)
 		{
-			for (int y = 0; y < gridSize.y - 1; y++)
+			for (int y = 0; y < gridSize.y - 2; y++)
 			{
-				for (int x = 0; x < gridSize.x - 1; x++)
+				for (int x = 0; x < gridSize.x - 2; x++)
 				{
 					unsigned char data = 0;
 					glm::f32 weights[8] =
@@ -44,7 +44,7 @@ namespace AssetManager
 
 
 
-					AddMarchingCubesTriangles(out, vertexGrid->GetVertex({ x, y, z })->position, data, granularity, weights);
+					AddMarchingCubesTriangles(out, { x, y, z }, data, granularity, weights, vertexGrid);
 
 				}
 			}
@@ -54,25 +54,132 @@ namespace AssetManager
 			glm::vec3 normal = glm::normalize(glm::cross(out[i].position - out[i + 1].position, out[i].position - out[i + 2].position));
 			out[i].normal = out[i + 1].normal = out[i + 2].normal = normal;
 		}
+		
+		for (auto v: *vertexGrid->GetVertices())
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				glm::vec3 normal;
+				VertexGrid::Edge& e = v.edges[i];
+				for (int j = 0; j <= e.index; j++)
+				{
+					normal += out[e.vertexRefrence[j]].normal;
+				}
+				normal = glm::normalize(normal);
+				for (int j = 0; j <= e.index; j++)
+				{
+					out[e.vertexRefrence[j]].normal = normal;
+				}
+			}
+		}
+
 		CreateBuffers(out);
 	}
 
-	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::vec3 vertexPosition, unsigned char data, glm::f32 granularity, glm::f32 weights[8])
+	void Mesh::AddMarchingCubesTriangles(std::vector<Vertex>& out, glm::uvec3 vertexIndex, unsigned char data, glm::f32 granularity, glm::f32 weights[8], VertexGrid* vertexGrid)
 	{
 		if (data == 0 || data == 255) //No vertices active -> no triangles generated
 		{
 			return;
 		}
+		VertexGrid::Vertex* vertex = vertexGrid->GetVertex(vertexIndex);
+
 		const int* triangleEdgeData = triTable[data];
+
+		if (vertexIndex.x == 16 &&
+			vertexIndex.y == 2 &&
+			vertexIndex.z == 0)
+		{
+			std::cout << "jhdfk" << std::endl;
+		}
 
 		int i = 0;
 		while (triangleEdgeData[i] != -1)
 		{
+			
+
 			int currentEdge = triangleEdgeData[i];
 			const int* vert = edgeToVert[currentEdge];
 			glm::vec3 interpolatedVertex = (vertToCoord[vert[0]] + (-weights[vert[0]] / (weights[vert[1]] - weights[vert[0]])) * (vertToCoord[vert[1]] - vertToCoord[vert[0]]));
 
-			out.push_back({ vertexPosition + interpolatedVertex * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+			out.push_back({  vertex->position + interpolatedVertex * granularity, glm::vec3(1, 0, 0), glm::vec2(0, 0) });
+
+			glm::uvec3 currentVertexIndex = vertexIndex;
+			int edgeId = 0;
+			if (currentEdge == 3)
+			{
+				edgeId = 1;
+			}
+			else if (currentEdge == 8)
+			{
+				edgeId = 2;
+			}
+			//Lower
+			if (currentEdge == 1)
+			{
+				currentVertexIndex.y++;
+				edgeId = 1;
+			}
+			else if (currentEdge == 2)
+			{
+				currentVertexIndex.x++;
+				edgeId = 0;
+			}
+
+			//Middle
+			else if (currentEdge == 9)
+			{
+				currentVertexIndex.y++;
+				edgeId = 2;
+			}
+			else if (currentEdge == 10)
+			{
+				currentVertexIndex.x++;
+				currentVertexIndex.y++;
+				edgeId = 2;
+			}
+
+			else if (currentEdge == 11)
+			{
+				currentVertexIndex.x++;
+				edgeId = 2;
+			}
+
+
+			//Upper
+			else if (currentEdge == 4)
+			{
+				currentVertexIndex.z++;
+				edgeId = 0;
+			}
+			else if (currentEdge == 5)
+			{
+				currentVertexIndex.y++;
+				currentVertexIndex.z++;
+				edgeId = 1;
+			}
+			else if (currentEdge == 6)
+			{
+				currentVertexIndex.x++;
+				currentVertexIndex.z++;
+				edgeId = 0;
+			}
+			else if (currentEdge == 7)
+			{
+				currentVertexIndex.z++;
+				edgeId = 2;
+			}
+
+			auto& e = vertexGrid->GetVertex(currentVertexIndex)->edges[edgeId]; 
+			e.vertexRefrence[e.index++] = out.size() - 1;
+
+			if (currentVertexIndex.x == 17 && 
+				currentVertexIndex.y == 3  &&
+				currentVertexIndex.z == 0 && edgeId == 2)
+			{
+				std::cout << "jhdfk" << std::endl;
+			}
+
 			i++;
 		}
 	}
